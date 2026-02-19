@@ -126,8 +126,8 @@ product_pairs AS (
   GROUP BY 1, 2
 )
 SELECT
-  p1.commodity AS product_a,
-  p2.commodity AS product_b,
+  p1.product_category AS product_a,
+  p2.product_category AS product_b,
   product_pairs.baskets_together
 FROM product_pairs
 JOIN products p1 ON product_pairs.product_a = p1.product_id
