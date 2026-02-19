@@ -23,14 +23,7 @@ const Insights = () => {
       setLoading(true);
       setError(null);
       try {
-        await ensureTables([
-          'transactions',
-          'products',
-          'coupons',
-          'coupon_redemptions',
-          'campaigns',
-          'households'
-        ]);
+        await ensureTables(['transactions']);
 
       const cohortSql = `WITH first_week AS (
   SELECT household_id, MIN(week) AS cohort_week
@@ -142,25 +135,42 @@ JOIN products p2 ON product_pairs.product_b = p2.product_id
 ORDER BY baskets_together DESC
 LIMIT 20;`;
 
-        const [cohortResult, deptResult, incomeResult, campaignResult, crossSellResult] =
-          await Promise.all([
-            runQuery(cohortSql),
-            runQuery(redeemDeptSql),
-            runQuery(redeemIncomeSql),
-            runQuery(campaignSql),
-            runQuery(crossSellSql)
-          ]);
+        const cohortResult = await runQuery(cohortSql);
 
         if (cancelled) {
           return;
         }
 
         setCohort(cohortResult);
+        setLoading(false);
+
+        const [deptResult, incomeResult, campaignResult, crossSellResult] = await Promise.all([
+          (async () => {
+            await ensureTables(['coupons', 'coupon_redemptions', 'products']);
+            return runQuery(redeemDeptSql);
+          })(),
+          (async () => {
+            await ensureTables(['coupon_redemptions', 'households']);
+            return runQuery(redeemIncomeSql);
+          })(),
+          (async () => {
+            await ensureTables(['campaigns', 'campaign_descriptions']);
+            return runQuery(campaignSql);
+          })(),
+          (async () => {
+            await ensureTables(['products']);
+            return runQuery(crossSellSql);
+          })()
+        ]);
+
+        if (cancelled) {
+          return;
+        }
+
         setRedeemByDept(deptResult);
         setRedeemByIncome(incomeResult);
         setCampaignLift(campaignResult);
         setCrossSell(crossSellResult);
-        setLoading(false);
       } catch (err) {
         if (!cancelled) {
           setError((err as Error).message);
@@ -183,7 +193,7 @@ LIMIT 20;`;
     );
   }
 
-  if (loading || !cohort || !redeemByDept || !redeemByIncome || !campaignLift || !crossSell) {
+  if (loading && !cohort) {
     return (
       <div className="space-y-6">
         <LoadingPanel label="Loading Customer & Promotion Insights" />
@@ -193,111 +203,142 @@ LIMIT 20;`;
     );
   }
 
-  const cohortWeeks = Array.from(new Set(cohort.rows.map((row) => Number(row.cohort_week)))).sort(
-    (a, b) => a - b,
-  );
-  const weekOffsets = Array.from(new Set(cohort.rows.map((row) => Number(row.week_offset)))).sort(
-    (a, b) => a - b,
-  );
+  const cohortWeeks = cohort
+    ? Array.from(new Set(cohort.rows.map((row) => Number(row.cohort_week)))).sort((a, b) => a - b)
+    : [];
+  const weekOffsets = cohort
+    ? Array.from(new Set(cohort.rows.map((row) => Number(row.week_offset)))).sort((a, b) => a - b)
+    : [];
 
-  const cohortOption = {
-    tooltip: { formatter: (params: { value: [number, number, number] }) => `${formatPercent(params.value[2])} retention` },
-    xAxis: { type: 'category', data: weekOffsets.map((val) => `W+${val}`) },
-    yAxis: { type: 'category', data: cohortWeeks.map((val) => `Week ${val}`) },
-    visualMap: {
-      min: 0,
-      max: 1,
-      calculable: true,
-      orient: 'horizontal',
-      left: 'center',
-      bottom: 0
-    },
-    series: [
-      {
-        type: 'heatmap',
-        data: cohort.rows.map((row) => [
-          weekOffsets.indexOf(Number(row.week_offset)),
-          cohortWeeks.indexOf(Number(row.cohort_week)),
-          Number(row.retention)
-        ])
+  const cohortOption = cohort
+    ? {
+        tooltip: {
+          formatter: (params: { value: [number, number, number] }) =>
+            `${formatPercent(params.value[2])} retention`
+        },
+        xAxis: { type: 'category', data: weekOffsets.map((val) => `W+${val}`) },
+        yAxis: { type: 'category', data: cohortWeeks.map((val) => `Week ${val}`) },
+        visualMap: {
+          min: 0,
+          max: 1,
+          calculable: true,
+          orient: 'horizontal',
+          left: 'center',
+          bottom: 0
+        },
+        series: [
+          {
+            type: 'heatmap',
+            data: cohort.rows.map((row) => [
+              weekOffsets.indexOf(Number(row.week_offset)),
+              cohortWeeks.indexOf(Number(row.cohort_week)),
+              Number(row.retention)
+            ])
+          }
+        ]
       }
-    ]
-  };
+    : null;
 
-  const deptOption = {
-    tooltip: { trigger: 'axis' },
-    xAxis: { type: 'category', data: redeemByDept.rows.map((row) => row.department) },
-    yAxis: { type: 'value' },
-    series: [{ type: 'bar', data: redeemByDept.rows.map((row) => row.redemptions) }]
-  };
-
-  const incomeOption = {
-    tooltip: { trigger: 'axis' },
-    xAxis: { type: 'category', data: redeemByIncome.rows.map((row) => row.income_band) },
-    yAxis: { type: 'value' },
-    series: [{ type: 'bar', data: redeemByIncome.rows.map((row) => row.redemptions) }]
-  };
-
-  const campaignOption = {
-    tooltip: { trigger: 'axis' },
-    xAxis: { type: 'category', data: campaignLift.rows.map((row) => row.campaign_id) },
-    yAxis: { type: 'value' },
-    series: [
-      {
-        type: 'bar',
-        data: campaignLift.rows.map((row) => Number(row.lift ?? 0))
+  const deptOption = redeemByDept
+    ? {
+        tooltip: { trigger: 'axis' },
+        xAxis: { type: 'category', data: redeemByDept.rows.map((row) => row.department) },
+        yAxis: { type: 'value' },
+        series: [{ type: 'bar', data: redeemByDept.rows.map((row) => row.redemptions) }]
       }
-    ]
-  };
+    : null;
+
+  const incomeOption = redeemByIncome
+    ? {
+        tooltip: { trigger: 'axis' },
+        xAxis: { type: 'category', data: redeemByIncome.rows.map((row) => row.income_band) },
+        yAxis: { type: 'value' },
+        series: [{ type: 'bar', data: redeemByIncome.rows.map((row) => row.redemptions) }]
+      }
+    : null;
+
+  const campaignOption = campaignLift
+    ? {
+        tooltip: { trigger: 'axis' },
+        xAxis: { type: 'category', data: campaignLift.rows.map((row) => row.campaign_id) },
+        yAxis: { type: 'value' },
+        series: [
+          {
+            type: 'bar',
+            data: campaignLift.rows.map((row) => Number(row.lift ?? 0))
+          }
+        ]
+      }
+    : null;
 
   return (
     <div className="space-y-6">
-      <ChartCard
-        title="Household Retention Cohorts"
-        subtitle="New vs repeat buyers across the first 12 weeks"
-        soWhat="Retention decay highlights where early life-cycle interventions are needed."
-        meta={cohort}
-        testId="chart-cohort"
-      >
-        <Chart option={cohortOption} height={320} />
-      </ChartCard>
+      {cohort && cohortOption ? (
+        <ChartCard
+          title="Household Retention Cohorts"
+          subtitle="New vs repeat buyers across the first 12 weeks"
+          soWhat="Retention decay highlights where early life-cycle interventions are needed."
+          meta={cohort}
+          testId="chart-cohort"
+        >
+          <Chart option={cohortOption} height={320} />
+        </ChartCard>
+      ) : (
+        <LoadingPanel label="Loading retention cohorts" />
+      )}
 
       <section className="grid gap-6 xl:grid-cols-2">
-        <ChartCard
-          title="Coupon Redemption by Department"
-          subtitle="Where coupons convert the most"
-          soWhat="Promo funds should concentrate on departments with the highest redemption velocity."
-          meta={redeemByDept}
-        >
-          <Chart option={deptOption} height={320} />
-        </ChartCard>
-        <ChartCard
-          title="Coupon Redemption by Income Segment"
-          subtitle="Household segment response"
-          soWhat="Segment response indicates which income cohorts are most promotion-sensitive."
-          meta={redeemByIncome}
-        >
-          <Chart option={incomeOption} height={320} />
-        </ChartCard>
+        {redeemByDept && deptOption ? (
+          <ChartCard
+            title="Coupon Redemption by Department"
+            subtitle="Where coupons convert the most"
+            soWhat="Promo funds should concentrate on departments with the highest redemption velocity."
+            meta={redeemByDept}
+          >
+            <Chart option={deptOption} height={320} />
+          </ChartCard>
+        ) : (
+          <Skeleton height="320px" />
+        )}
+        {redeemByIncome && incomeOption ? (
+          <ChartCard
+            title="Coupon Redemption by Income Segment"
+            subtitle="Household segment response"
+            soWhat="Segment response indicates which income cohorts are most promotion-sensitive."
+            meta={redeemByIncome}
+          >
+            <Chart option={incomeOption} height={320} />
+          </ChartCard>
+        ) : (
+          <Skeleton height="320px" />
+        )}
       </section>
 
-      <ChartCard
-        title="Campaign Purchase Lift (Proxy)"
-        subtitle="Campaign window vs prior 4-week baseline"
-        soWhat="Campaign lift highlights which programs drive incremental spend, not just redistribution."
-        meta={campaignLift}
-      >
-        <Chart option={campaignOption} height={320} />
-      </ChartCard>
+      {campaignLift && campaignOption ? (
+        <ChartCard
+          title="Campaign Purchase Lift (Proxy)"
+          subtitle="Campaign window vs prior 4-week baseline"
+          soWhat="Campaign lift highlights which programs drive incremental spend, not just redistribution."
+          meta={campaignLift}
+        >
+          <Chart option={campaignOption} height={320} />
+        </ChartCard>
+      ) : (
+        <Skeleton height="320px" />
+      )}
 
-      <ChartCard
-        title="Top Cross-Sell Pairs"
-        subtitle="Most frequent co-occurring products in baskets"
-        soWhat="Cross-sell pairs guide merchandising adjacency and bundle strategies."
-        meta={crossSell}
-      >
-        <Table columns={crossSell.columns} rows={crossSell.rows} />
-      </ChartCard>
+      {crossSell ? (
+        <ChartCard
+          title="Top Cross-Sell Pairs"
+          subtitle="Most frequent co-occurring products in baskets"
+          soWhat="Cross-sell pairs guide merchandising adjacency and bundle strategies."
+          meta={crossSell}
+        >
+          <Table columns={crossSell.columns} rows={crossSell.rows} />
+        </ChartCard>
+      ) : (
+        <Skeleton height="320px" />
+      )}
     </div>
   );
 };
