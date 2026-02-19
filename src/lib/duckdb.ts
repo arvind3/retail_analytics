@@ -1,4 +1,8 @@
 ﻿import * as duckdb from '@duckdb/duckdb-wasm';
+import mvpWasm from '@duckdb/duckdb-wasm/dist/duckdb-mvp.wasm?url';
+import ehWasm from '@duckdb/duckdb-wasm/dist/duckdb-eh.wasm?url';
+import mvpWorker from '@duckdb/duckdb-wasm/dist/duckdb-browser-mvp.worker.js?worker';
+import ehWorker from '@duckdb/duckdb-wasm/dist/duckdb-browser-eh.worker.js?worker';
 import { fetchWithProgress } from './cache';
 import { getMetadata } from './metadata';
 import { getDbState, setDbState } from './dbState';
@@ -19,6 +23,17 @@ export const getAvailableTables = async () => {
   return tables.filter((table) => tableFiles[table]);
 };
 
+const DUCKDB_BUNDLES: duckdb.DuckDBBundles = {
+  mvp: {
+    mainModule: mvpWasm,
+    mainWorker: mvpWorker
+  },
+  eh: {
+    mainModule: ehWasm,
+    mainWorker: ehWorker
+  }
+};
+
 let dbPromise: Promise<duckdb.AsyncDuckDB> | null = null;
 let connPromise: Promise<duckdb.AsyncDuckDBConnection> | null = null;
 
@@ -26,17 +41,13 @@ const loadedTables = new Set<string>();
 const loadPromises = new Map<string, Promise<void>>();
 const progressByTable = new Map<string, number>();
 
-const getBundle = async () => {
-  const bundles = duckdb.getJsDelivrBundles();
-  return duckdb.selectBundle(bundles);
-};
-
 export const initDuckDB = async () => {
   if (!dbPromise) {
     dbPromise = (async () => {
       setDbState({ status: 'loading', message: 'Initializing DuckDB-WASM' });
-      const bundle = await getBundle();
-      const worker = new Worker(bundle.mainWorker, { type: 'module' });
+      const bundle = await duckdb.selectBundle(DUCKDB_BUNDLES);
+      const WorkerCtor = bundle.mainWorker as unknown as { new (): Worker };
+      const worker = new WorkerCtor();
       const logger = new duckdb.ConsoleLogger();
       const db = new duckdb.AsyncDuckDB(logger, worker);
       await db.instantiate(bundle.mainModule, bundle.pthreadWorker);
