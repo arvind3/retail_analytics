@@ -26,21 +26,14 @@ jobs:
         with:
           python-version: '3.11'
 
-      - name: Setup R
-        uses: r-lib/actions/setup-r@v2
-        with:
-          r-version: '4.3'
-
       - name: Install Node dependencies
         run: npm ci
 
-      - name: Prepare dataset
-        env:
-          CJ_USE_ARROW: "0"
-        run: npm run prepare:data
+      - name: Install data preparation dependencies
+        run: pip install pandas pyarrow pyreadr
 
-      - name: Install data validation dependencies
-        run: pip install pandas pyarrow
+      - name: Prepare dataset
+        run: npm run prepare:data
 
       - name: Lint
         run: npm run lint

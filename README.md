@@ -24,9 +24,10 @@ flowchart LR
 npm install
 ```
 
-2. Generate data (requires R + CRAN access)
+2. Generate data (Python + CRAN access)
 
 ```bash
+python -m pip install pandas pyarrow pyreadr
 npm run prepare:data
 ```
 
@@ -58,17 +59,20 @@ python -m pip install pandas pyarrow
 
 ## Update the Dataset
 
-The data pipeline pulls the CRAN `completejourney` package and exports Parquet files.
+The data pipeline downloads the CRAN `completejourney` package, extracts the datasets, and exports Parquet files.
 
 ```bash
 # Optional: limit size for faster demos (last N weeks)
 $env:CJ_SLICE_WEEKS = "26"
 # Optional: hard limit rows
 $env:CJ_SLICE_ROWS = "200000"
-# Optional: skip Apache Arrow and use nanoparquet
-$env:CJ_USE_ARROW = "0"
-
 npm run prepare:data
+```
+
+If you prefer the R-based pipeline:
+
+```bash
+npm run prepare:data:r
 ```
 
 Parquet outputs land in `data/parquet`, and metadata is written to `data/metadata.json`. Swap in a full dataset by replacing Parquet files with compatible schemas.

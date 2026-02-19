@@ -15,7 +15,8 @@
     "test:data": "python scripts/validate_data.py",
     "e2e": "npm run build && playwright test",
     "e2e:live": "playwright test",
-    "prepare:data": "Rscript scripts/prepare_data.R"
+    "prepare:data": "python scripts/prepare_data.py",
+    "prepare:data:r": "Rscript scripts/prepare_data.R"
   },
   "dependencies": {
     "@duckdb/duckdb-wasm": "^1.29.0",
