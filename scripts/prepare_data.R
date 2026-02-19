@@ -7,18 +7,30 @@ install_if_missing <- function(pkg) {
 }
 
 install_if_missing("completejourney")
-install_if_missing("arrow")
 install_if_missing("dplyr")
 install_if_missing("tibble")
 install_if_missing("jsonlite")
+install_if_missing("arrow")
 
 suppressPackageStartupMessages({
   library(completejourney)
-  library(arrow)
   library(dplyr)
   library(tibble)
   library(jsonlite)
 })
+
+has_arrow <- requireNamespace("arrow", quietly = TRUE)
+if (!has_arrow) {
+  install_if_missing("nanoparquet")
+}
+
+write_parquet_file <- function(tbl, out_path) {
+  if (has_arrow) {
+    arrow::write_parquet(tbl, out_path, compression = "zstd")
+  } else {
+    nanoparquet::write_parquet(tbl, out_path)
+  }
+}
 
 out_dir <- file.path("data", "parquet")
 if (!dir.exists(out_dir)) {
@@ -93,7 +105,7 @@ for (item in data_items) {
   }
 
   out_path <- file.path(out_dir, paste0(out_name, ".parquet"))
-  write_parquet(tbl, out_path, compression = "zstd")
+  write_parquet_file(tbl, out_path)
 
   columns <- lapply(names(tbl), function(col) {
     list(name = col, type = class(tbl[[col]])[1])
