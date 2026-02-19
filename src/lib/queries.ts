@@ -36,15 +36,29 @@ ORDER BY week;`
   FROM transactions
   GROUP BY basket_id
 ),
-params AS (
-  SELECT MIN(basket_sales) AS min_val, MAX(basket_sales) AS max_val FROM baskets
+stats AS (
+  SELECT
+    MIN(basket_sales) AS min_val,
+    MAX(basket_sales) AS max_val,
+    (MAX(basket_sales) - MIN(basket_sales)) / 12.0 AS bin_width
+  FROM baskets
+),
+binned AS (
+  SELECT
+    CASE
+      WHEN stats.bin_width = 0 THEN 0
+      WHEN basket_sales = stats.max_val THEN 11
+      ELSE CAST(FLOOR((basket_sales - stats.min_val) / stats.bin_width) AS INTEGER)
+    END AS bucket,
+    basket_sales
+  FROM baskets, stats
 )
 SELECT
-  width_bucket(basket_sales, params.min_val, params.max_val, 12) AS bucket,
+  bucket,
   MIN(basket_sales) AS bucket_min,
   MAX(basket_sales) AS bucket_max,
   COUNT(*) AS basket_count
-FROM baskets, params
+FROM binned
 GROUP BY bucket
 ORDER BY bucket;`
   },
