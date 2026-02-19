@@ -35,6 +35,8 @@ jobs:
         run: npm ci
 
       - name: Prepare dataset
+        env:
+          CJ_USE_ARROW: "0"
         run: npm run prepare:data
 
       - name: Build

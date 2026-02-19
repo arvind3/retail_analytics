@@ -2,7 +2,7 @@ options(repos = c(CRAN = "https://cloud.r-project.org"))
 
 install_if_missing <- function(pkg) {
   if (!requireNamespace(pkg, quietly = TRUE)) {
-    install.packages(pkg)
+    tryCatch(install.packages(pkg), error = function(e) message(e$message))
   }
 }
 
@@ -10,7 +10,10 @@ install_if_missing("completejourney")
 install_if_missing("dplyr")
 install_if_missing("tibble")
 install_if_missing("jsonlite")
-install_if_missing("arrow")
+use_arrow <- Sys.getenv("CJ_USE_ARROW", unset = "1") == "1"
+if (use_arrow) {
+  install_if_missing("arrow")
+}
 
 suppressPackageStartupMessages({
   library(completejourney)
@@ -19,7 +22,7 @@ suppressPackageStartupMessages({
   library(jsonlite)
 })
 
-has_arrow <- requireNamespace("arrow", quietly = TRUE)
+has_arrow <- use_arrow && requireNamespace("arrow", quietly = TRUE)
 if (!has_arrow) {
   install_if_missing("nanoparquet")
 }

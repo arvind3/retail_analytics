@@ -65,6 +65,8 @@ The data pipeline pulls the CRAN `completejourney` package and exports Parquet f
 $env:CJ_SLICE_WEEKS = "26"
 # Optional: hard limit rows
 $env:CJ_SLICE_ROWS = "200000"
+# Optional: skip Apache Arrow and use nanoparquet
+$env:CJ_USE_ARROW = "0"
 
 npm run prepare:data
 ```
