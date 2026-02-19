@@ -1,0 +1,49 @@
+﻿@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: light;
+}
+
+body {
+  font-family: 'IBM Plex Sans', ui-sans-serif, system-ui;
+}
+
+.app-shell {
+  min-height: 100vh;
+  background: radial-gradient(circle at top, rgba(118, 190, 169, 0.12), transparent 48%),
+    linear-gradient(135deg, rgba(247, 246, 242, 0.8), rgba(236, 233, 226, 0.7));
+}
+
+.texture {
+  background-image: radial-gradient(rgba(28, 25, 20, 0.04) 1px, transparent 0);
+  background-size: 16px 16px;
+}
+
+.chart-card {
+  @apply rounded-2xl border border-ink-100 bg-white/80 shadow-soft backdrop-blur;
+}
+
+.kpi-card {
+  @apply rounded-2xl border border-ink-100 bg-white/90 shadow-soft;
+}
+
+.badge {
+  @apply inline-flex items-center rounded-full border border-ink-200 px-3 py-1 text-xs font-medium uppercase tracking-wide text-ink-700;
+}
+
+.skeleton {
+  background: linear-gradient(90deg, rgba(227, 224, 215, 0.3), rgba(236, 233, 226, 0.8), rgba(227, 224, 215, 0.3));
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
