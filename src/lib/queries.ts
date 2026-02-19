@@ -197,30 +197,34 @@ LIMIT 20;`
     id: 'campaign-lift',
     title: 'Campaign Exposure Lift',
     description: 'Proxy lift comparing campaign window sales to pre-campaign baseline.',
-    tables: ['transactions', 'campaigns'],
+    tables: ['transactions', 'campaigns', 'campaign_descriptions'],
     sql: `WITH campaign_sales AS (
   SELECT c.campaign_id, SUM(t.sales_value) AS campaign_sales
   FROM campaigns c
+  JOIN campaign_descriptions d ON c.campaign_id = d.campaign_id
   JOIN transactions t
     ON t.household_id = c.household_id
-    AND t.day BETWEEN c.start_day AND c.end_day
+    AND CAST(t.transaction_date AS DATE) BETWEEN CAST(d.start_date AS DATE) AND CAST(d.end_date AS DATE)
   GROUP BY c.campaign_id
 ),
 baseline_sales AS (
   SELECT c.campaign_id, SUM(t.sales_value) AS baseline_sales
   FROM campaigns c
+  JOIN campaign_descriptions d ON c.campaign_id = d.campaign_id
   JOIN transactions t
     ON t.household_id = c.household_id
-    AND t.day BETWEEN (c.start_day - 28) AND (c.start_day - 1)
+    AND CAST(t.transaction_date AS DATE) BETWEEN
+      CAST(d.start_date AS DATE) - INTERVAL 28 DAY AND CAST(d.start_date AS DATE) - INTERVAL 1 DAY
   GROUP BY c.campaign_id
 )
 SELECT
   c.campaign_id,
-  c.campaign_type,
+  d.campaign_type,
   campaign_sales.campaign_sales,
   baseline_sales.baseline_sales,
   (campaign_sales.campaign_sales / NULLIF(baseline_sales.baseline_sales, 0)) - 1 AS lift
 FROM campaigns c
+JOIN campaign_descriptions d ON c.campaign_id = d.campaign_id
 LEFT JOIN campaign_sales ON c.campaign_id = campaign_sales.campaign_id
 LEFT JOIN baseline_sales ON c.campaign_id = baseline_sales.campaign_id
 ORDER BY lift DESC NULLS LAST
