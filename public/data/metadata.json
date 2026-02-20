@@ -1,6 +1,255 @@
 {
-  "generated_at": "",
-  "source": "completejourney (run scripts/prepare_data.R)",
-  "tables": {},
-  "total_bytes": 0
+  "generated_at": "2026-02-20T04:32:39.122659Z",
+  "source": "completejourney 1.1.1",
+  "tables": {
+    "campaigns": {
+      "rows": 6589,
+      "bytes": 17821,
+      "columns": [
+        {
+          "name": "campaign_id",
+          "type": "str"
+        },
+        {
+          "name": "household_id",
+          "type": "str"
+        }
+      ],
+      "min_date": null,
+      "max_date": null
+    },
+    "campaign_descriptions": {
+      "rows": 27,
+      "bytes": 3362,
+      "columns": [
+        {
+          "name": "campaign_id",
+          "type": "str"
+        },
+        {
+          "name": "campaign_type",
+          "type": "category"
+        },
+        {
+          "name": "start_date",
+          "type": "object"
+        },
+        {
+          "name": "end_date",
+          "type": "object"
+        }
+      ],
+      "min_date": null,
+      "max_date": null
+    },
+    "coupons": {
+      "rows": 116204,
+      "bytes": 482038,
+      "columns": [
+        {
+          "name": "coupon_upc",
+          "type": "str"
+        },
+        {
+          "name": "product_id",
+          "type": "str"
+        },
+        {
+          "name": "campaign_id",
+          "type": "str"
+        }
+      ],
+      "min_date": null,
+      "max_date": null
+    },
+    "coupon_redemptions": {
+      "rows": 2102,
+      "bytes": 15761,
+      "columns": [
+        {
+          "name": "household_id",
+          "type": "str"
+        },
+        {
+          "name": "coupon_upc",
+          "type": "str"
+        },
+        {
+          "name": "campaign_id",
+          "type": "str"
+        },
+        {
+          "name": "redemption_date",
+          "type": "object"
+        }
+      ],
+      "min_date": null,
+      "max_date": null
+    },
+    "households": {
+      "rows": 801,
+      "bytes": 12440,
+      "columns": [
+        {
+          "name": "household_id",
+          "type": "str"
+        },
+        {
+          "name": "age",
+          "type": "category"
+        },
+        {
+          "name": "income",
+          "type": "category"
+        },
+        {
+          "name": "home_ownership",
+          "type": "category"
+        },
+        {
+          "name": "marital_status",
+          "type": "category"
+        },
+        {
+          "name": "household_size",
+          "type": "category"
+        },
+        {
+          "name": "household_comp",
+          "type": "category"
+        },
+        {
+          "name": "kids_count",
+          "type": "category"
+        }
+      ],
+      "min_date": null,
+      "max_date": null
+    },
+    "products": {
+      "rows": 92331,
+      "bytes": 1264876,
+      "columns": [
+        {
+          "name": "product_id",
+          "type": "str"
+        },
+        {
+          "name": "manufacturer_id",
+          "type": "str"
+        },
+        {
+          "name": "department",
+          "type": "str"
+        },
+        {
+          "name": "brand",
+          "type": "category"
+        },
+        {
+          "name": "product_category",
+          "type": "str"
+        },
+        {
+          "name": "product_type",
+          "type": "str"
+        },
+        {
+          "name": "package_size",
+          "type": "str"
+        }
+      ],
+      "min_date": null,
+      "max_date": null
+    },
+    "promotions_sample": {
+      "rows": 360535,
+      "bytes": 1218147,
+      "columns": [
+        {
+          "name": "product_id",
+          "type": "str"
+        },
+        {
+          "name": "store_id",
+          "type": "str"
+        },
+        {
+          "name": "display_location",
+          "type": "category"
+        },
+        {
+          "name": "mailer_location",
+          "type": "category"
+        },
+        {
+          "name": "week",
+          "type": "int32"
+        }
+      ],
+      "min_date": null,
+      "max_date": null
+    },
+    "transactions": {
+      "rows": 75000,
+      "bytes": 1988868,
+      "columns": [
+        {
+          "name": "household_id",
+          "type": "str"
+        },
+        {
+          "name": "store_id",
+          "type": "str"
+        },
+        {
+          "name": "basket_id",
+          "type": "str"
+        },
+        {
+          "name": "product_id",
+          "type": "str"
+        },
+        {
+          "name": "quantity",
+          "type": "float64"
+        },
+        {
+          "name": "sales_value",
+          "type": "float64"
+        },
+        {
+          "name": "retail_disc",
+          "type": "float64"
+        },
+        {
+          "name": "coupon_disc",
+          "type": "float64"
+        },
+        {
+          "name": "coupon_match_disc",
+          "type": "float64"
+        },
+        {
+          "name": "week",
+          "type": "int32"
+        },
+        {
+          "name": "transaction_timestamp",
+          "type": "datetime64[s]"
+        },
+        {
+          "name": "transaction_date",
+          "type": "object"
+        },
+        {
+          "name": "day",
+          "type": "int64"
+        }
+      ],
+      "min_date": "2017-01-01",
+      "max_date": "2018-01-01"
+    }
+  },
+  "total_bytes": 5003313
 }

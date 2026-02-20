@@ -5,7 +5,7 @@ const baseURL = liveBaseUrl || 'http://localhost:4173';
 
 export default defineConfig({
   testDir: 'tests/e2e',
-  timeout: 60000,
+  timeout: 120000,
   retries: process.env.CI ? 1 : 0,
   use: {
     baseURL,

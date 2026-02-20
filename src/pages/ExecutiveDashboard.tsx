@@ -10,7 +10,6 @@ import {
   formatCompact,
   formatCurrency,
   formatCurrencyShort,
-  formatNumber,
   formatPercent
 } from '../lib/format';
 
@@ -264,7 +263,7 @@ ORDER BY r, f;`;
     legend: { data: ['Revenue', 'YoY-ish'], bottom: 0 },
     xAxis: {
       type: 'category',
-      data: revenueTrend.rows.map((row) => row.week)
+      data: revenueTrend.rows.map((row) => Number(row.week))
     },
     yAxis: { type: 'value' },
     series: [
@@ -272,13 +271,13 @@ ORDER BY r, f;`;
         name: 'Revenue',
         type: 'line',
         smooth: true,
-        data: revenueTrend.rows.map((row) => row.revenue)
+        data: revenueTrend.rows.map((row) => Number(row.revenue ?? 0))
       },
       {
         name: 'YoY-ish',
         type: 'line',
         smooth: true,
-        data: revenueTrend.rows.map((row) => row.revenue_prev_year)
+        data: revenueTrend.rows.map((row) => Number(row.revenue_prev_year ?? 0))
       }
     ]
   };
@@ -293,7 +292,7 @@ ORDER BY r, f;`;
     series: [
       {
         type: 'bar',
-        data: basketDist.rows.map((row) => row.basket_count)
+        data: basketDist.rows.map((row) => Number(row.basket_count ?? 0))
       }
     ]
   };
@@ -318,7 +317,7 @@ ORDER BY r, f;`;
       {
         name: 'Revenue',
         type: 'bar',
-        data: topDepartments.rows.map((row) => row.revenue)
+        data: topDepartments.rows.map((row) => Number(row.revenue ?? 0))
       },
       {
         name: 'Cumulative %',
@@ -338,7 +337,7 @@ ORDER BY r, f;`;
     series: [
       {
         type: 'bar',
-        data: promoEffect.rows.map((row) => row.revenue)
+        data: promoEffect.rows.map((row) => Number(row.revenue ?? 0))
       }
     ]
   };
@@ -358,7 +357,11 @@ ORDER BY r, f;`;
     series: [
       {
         type: 'heatmap',
-        data: rfmHeatmap.rows.map((row) => [Number(row.r) - 1, Number(row.f) - 1, row.households])
+        data: rfmHeatmap.rows.map((row) => [
+          Number(row.r) - 1,
+          Number(row.f) - 1,
+          Number(row.households ?? 0)
+        ])
       }
     ]
   };

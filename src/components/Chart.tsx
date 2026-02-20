@@ -1,7 +1,7 @@
 ﻿import { useEffect, useRef } from 'react';
 import * as echarts from 'echarts';
 
-const Chart = ({ option, height = 320 }: { option: echarts.EChartsOption; height?: number }) => {
+const Chart = ({ option, height = 320 }: { option: unknown; height?: number }) => {
   const ref = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
@@ -9,7 +9,7 @@ const Chart = ({ option, height = 320 }: { option: echarts.EChartsOption; height
       return;
     }
     const chart = echarts.init(ref.current, undefined, { renderer: 'canvas' });
-    chart.setOption(option);
+    chart.setOption(option as echarts.EChartsOption);
 
     const resizeObserver = new ResizeObserver(() => chart.resize());
     resizeObserver.observe(ref.current);

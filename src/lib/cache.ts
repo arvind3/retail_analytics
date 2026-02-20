@@ -54,12 +54,12 @@ export const fetchWithProgress = async (
   const reader = response.body.getReader();
   const chunks: Uint8Array[] = [];
   let received = 0;
+  let done = false;
 
-  while (true) {
-    const { done, value } = await reader.read();
-    if (done) {
-      break;
-    }
+  while (!done) {
+    const next = await reader.read();
+    done = next.done;
+    const { value } = next;
     if (value) {
       chunks.push(value);
       received += value.length;
