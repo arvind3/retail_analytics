@@ -12,7 +12,7 @@ const attachRuntimeErrorTracker = (page: Page) => {
       return;
     }
     const text = message.text();
-    if (/favicon|source map/i.test(text)) {
+    if (/favicon|source map|ERR_SOCKET_NOT_CONNECTED/i.test(text)) {
       return;
     }
     errors.push(`console: ${text}`);

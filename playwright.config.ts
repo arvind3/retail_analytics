@@ -1,7 +1,11 @@
-﻿import { defineConfig } from '@playwright/test';
+import { defineConfig } from '@playwright/test';
 
 const liveBaseUrl = process.env.PLAYWRIGHT_BASE_URL;
-const baseURL = liveBaseUrl || 'http://localhost:4173';
+const baseURL = liveBaseUrl
+  ? liveBaseUrl.endsWith('/')
+    ? liveBaseUrl
+    : `${liveBaseUrl}/`
+  : 'http://localhost:4173';
 
 export default defineConfig({
   testDir: 'tests/e2e',
