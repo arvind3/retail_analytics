@@ -28,14 +28,14 @@ const ChartCard = ({
         </div>
         {meta ? (
           <div className="text-right text-xs text-ink-500">
-            <div>Query: {formatDurationMs(meta.elapsedMs)}</div>
-            <div>Rows: {formatNumber(meta.rowCount)}</div>
-            <div>Data loaded: {formatBytes(dbState.loadedBytes)}</div>
+            <div>Refresh latency: {formatDurationMs(meta.elapsedMs)}</div>
+            <div>Rows returned: {formatNumber(meta.rowCount)}</div>
+            <div>Data in session: {formatBytes(dbState.loadedBytes)}</div>
           </div>
         ) : null}
       </div>
       <div className="mt-4">{children}</div>
-      <p className="mt-4 text-sm text-ink-600">So what? {soWhat}</p>
+      <p className="mt-4 text-sm text-ink-600">Business interpretation: {soWhat}</p>
     </div>
   );
 };

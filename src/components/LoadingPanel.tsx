@@ -15,7 +15,7 @@ const LoadingPanel = ({ label }: { label: string }) => {
         <div className="h-full bg-accent-500" style={{ width: `${progress * 100}%` }} />
       </div>
       <div className="mt-2 text-xs text-ink-500">
-        {formatBytes(dbState.loadedBytes)} loaded
+        {formatBytes(dbState.loadedBytes)} loaded into the analysis session
       </div>
     </div>
   );

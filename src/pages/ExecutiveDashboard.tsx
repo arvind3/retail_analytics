@@ -115,8 +115,8 @@ LIMIT 12;`;
 
       const promoSql = `SELECT
   CASE
-    WHEN (ABS(coupon_disc) + ABS(coupon_match_disc)) > 0 THEN 'Coupon Used'
-    ELSE 'No Coupon'
+    WHEN (ABS(coupon_disc) + ABS(coupon_match_disc)) > 0 THEN 'Promotion Redeemed'
+    ELSE 'No Promotion'
   END AS promo_flag,
   SUM(sales_value) AS revenue,
   COUNT(DISTINCT basket_id) AS baskets
@@ -190,7 +190,7 @@ ORDER BY r, f;`;
         setRfmHeatmap(rfmResult);
 
       const topDept = deptResult.rows[0] as Record<string, unknown> | undefined;
-      const promoRow = promoResult.rows.find((row) => row.promo_flag === 'Coupon Used') as
+      const promoRow = promoResult.rows.find((row) => row.promo_flag === 'Promotion Redeemed') as
         | Record<string, unknown>
         | undefined;
       const promoShare = promoRow
@@ -200,13 +200,12 @@ ORDER BY r, f;`;
 
         setInsights([
           topDept
-            ? `Top department: ${topDept.department} driving ${formatCurrencyShort(
+            ? `Leading category performance is concentrated in ${topDept.department}, generating ${formatCurrencyShort(
                 Number(topDept.revenue ?? 0),
-              )} in sales.`
-            : 'Top department contribution is stable across the portfolio.',
-          `Average basket value sits at ${formatCurrency(Number(kpiRow.avg_basket ?? 0))}, signaling
-         strong spend per trip.`,
-          `Coupons influence ${formatPercent(promoShare)} of sales, with redemption rate at ${formatPercent(
+              )} in net sales.`
+            : 'Category performance remains broadly distributed across the portfolio.',
+          `Average basket value is ${formatCurrency(Number(kpiRow.avg_basket ?? 0))}, indicating healthy spend per shopping trip.`,
+          `Promotions influence ${formatPercent(promoShare)} of net sales, with a redemption rate of ${formatPercent(
             redemptionRate,
           )}.`
         ]);
@@ -229,7 +228,7 @@ ORDER BY r, f;`;
   if (error) {
     return (
       <div className="chart-card p-6 text-sm text-ink-600">
-        Failed to load dashboard data: {error}
+        Unable to load the executive overview: {error}
       </div>
     );
   }
@@ -245,7 +244,7 @@ ORDER BY r, f;`;
   ) {
     return (
       <div className="space-y-6">
-        <LoadingPanel label="Preparing Executive Dashboard" />
+        <LoadingPanel label="Preparing Executive Overview" />
         <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
           <Skeleton height="140px" />
           <Skeleton height="140px" />
@@ -260,7 +259,7 @@ ORDER BY r, f;`;
 
   const revenueOption = {
     tooltip: { trigger: 'axis' },
-    legend: { data: ['Revenue', 'YoY-ish'], bottom: 0 },
+    legend: { data: ['Net Sales', 'Prior-Year Reference'], bottom: 0 },
     xAxis: {
       type: 'category',
       data: revenueTrend.rows.map((row) => Number(row.week))
@@ -268,13 +267,13 @@ ORDER BY r, f;`;
     yAxis: { type: 'value' },
     series: [
       {
-        name: 'Revenue',
+        name: 'Net Sales',
         type: 'line',
         smooth: true,
         data: revenueTrend.rows.map((row) => Number(row.revenue ?? 0))
       },
       {
-        name: 'YoY-ish',
+        name: 'Prior-Year Reference',
         type: 'line',
         smooth: true,
         data: revenueTrend.rows.map((row) => Number(row.revenue_prev_year ?? 0))
@@ -299,7 +298,7 @@ ORDER BY r, f;`;
 
   const paretoOption = {
     tooltip: { trigger: 'axis' },
-    legend: { data: ['Revenue', 'Cumulative %'], bottom: 0 },
+    legend: { data: ['Category Sales', 'Cumulative Contribution'], bottom: 0 },
     xAxis: {
       type: 'category',
       data: topDepartments.rows.map((row) => row.department)
@@ -315,12 +314,12 @@ ORDER BY r, f;`;
     ],
     series: [
       {
-        name: 'Revenue',
+        name: 'Category Sales',
         type: 'bar',
         data: topDepartments.rows.map((row) => Number(row.revenue ?? 0))
       },
       {
-        name: 'Cumulative %',
+        name: 'Cumulative Contribution',
         type: 'line',
         yAxisIndex: 1,
         data: topDepartments.rows.map(
@@ -368,44 +367,85 @@ ORDER BY r, f;`;
 
   return (
     <div className="space-y-6">
+      <section className="chart-card p-6">
+        <h2 className="text-lg font-semibold text-ink-900">Executive Performance Brief</h2>
+        <p className="mt-1 text-sm text-ink-600">
+          A single decision view of net sales momentum, basket economics, category concentration,
+          and promotion efficiency.
+        </p>
+        <div className="mt-4 grid gap-3 md:grid-cols-3">
+          <div className="rounded-xl border border-ink-100 bg-white/70 p-4">
+            <div className="text-xs font-semibold uppercase tracking-[0.2em] text-ink-500">
+              What You Are Seeing
+            </div>
+            <p className="mt-2 text-sm text-ink-600">
+              Current business performance across sales, trips, customer activity, and promotional
+              influence.
+            </p>
+          </div>
+          <div className="rounded-xl border border-ink-100 bg-white/70 p-4">
+            <div className="text-xs font-semibold uppercase tracking-[0.2em] text-ink-500">
+              Why It Matters
+            </div>
+            <p className="mt-2 text-sm text-ink-600">
+              These indicators reveal where growth is strong, where margin is pressured, and where
+              intervention will have the highest impact.
+            </p>
+          </div>
+          <div className="rounded-xl border border-ink-100 bg-white/70 p-4">
+            <div className="text-xs font-semibold uppercase tracking-[0.2em] text-ink-500">
+              How To Interpret
+            </div>
+            <p className="mt-2 text-sm text-ink-600">
+              Start with net sales trend, then validate whether performance is driven by bigger
+              baskets, stronger category mix, or better promotion conversion.
+            </p>
+          </div>
+        </div>
+      </section>
+
       <section className="grid gap-4 md:grid-cols-2 xl:grid-cols-5">
         <StatCard
-          label="Total Revenue"
+          label="Net Sales"
           value={formatCurrencyShort(kpis.revenue)}
-          trend="Weekly sales momentum"
+          trend="Overall sales momentum"
         />
         <StatCard
-          label="Baskets"
+          label="Shopping Trips"
           value={formatCompact(kpis.baskets)}
-          helper="Unique basket trips"
+          helper="Distinct completed baskets"
         />
-        <StatCard label="Households" value={formatCompact(kpis.households)} helper="Active shoppers" />
         <StatCard
-          label="Avg Basket"
+          label="Active Households"
+          value={formatCompact(kpis.households)}
+          helper="Customers purchasing in period"
+        />
+        <StatCard
+          label="Average Basket Value"
           value={formatCurrency(kpis.avgBasket)}
-          helper="Average trip spend"
+          helper="Average spend per shopping trip"
         />
         <StatCard
-          label="Redemption Rate"
+          label="Promotion Redemption"
           value={formatPercent(kpis.redemptionRate)}
-          helper="Coupons redeemed"
+          helper="Share of issued promotions redeemed"
         />
       </section>
 
       <section className="grid gap-6 xl:grid-cols-2">
         <ChartCard
-          title="Weekly Revenue Trend"
-          subtitle="Current period vs 52-week offset"
-          soWhat="Momentum remains the north-star KPI for leadership. Track where weekly demand starts to drift."
+          title="Weekly Net Sales Momentum"
+          subtitle="Current period versus prior-year reference"
+          soWhat="Use this trend to spot demand shifts early and react before margin or inventory risk compounds."
           meta={revenueTrend}
           testId="chart-revenue"
         >
           <Chart option={revenueOption} height={320} />
         </ChartCard>
         <ChartCard
-          title="Basket Value Distribution"
-          subtitle="Spend per trip across all households"
-          soWhat="Basket dispersion highlights whether growth is coming from more trips or bigger trips."
+          title="Basket Size Distribution"
+          subtitle="Spend per trip across active households"
+          soWhat="This view separates growth from trip frequency versus growth from spend depth per trip."
           meta={basketDist}
         >
           <Chart option={basketOption} height={320} />
@@ -414,17 +454,17 @@ ORDER BY r, f;`;
 
       <section className="grid gap-6 xl:grid-cols-2">
         <ChartCard
-          title="Top Departments with Pareto"
-          subtitle="Department contribution to total revenue"
-          soWhat="A small set of departments drives most revenue; this directs trade and supply focus."
+          title="Category Revenue Concentration"
+          subtitle="Category contribution and cumulative share of net sales"
+          soWhat="Concentration indicates where commercial focus, supply priority, and assortment bets should be strongest."
           meta={topDepartments}
         >
           <Chart option={paretoOption} height={320} />
         </ChartCard>
         <ChartCard
-          title="Promo Effectiveness"
-          subtitle="Coupon-impacted revenue vs baseline"
-          soWhat="Coupons are shifting significant revenue, signaling a lever for targeted margin strategy."
+          title="Promotion Impact on Sales"
+          subtitle="Net sales split between promoted and non-promoted baskets"
+          soWhat="Promotion contribution clarifies whether growth is sustainable demand or discount-driven volume."
           meta={promoEffect}
         >
           <Chart option={promoOption} height={320} />
@@ -433,14 +473,14 @@ ORDER BY r, f;`;
 
       <section className="grid gap-6 xl:grid-cols-2">
         <ChartCard
-          title="RFM Segmentation"
-          subtitle="Recency vs frequency distribution"
-          soWhat="The heatmap makes it clear where loyalty programs should prioritize high-frequency, recent shoppers."
+          title="Customer Value Segments"
+          subtitle="Recency versus frequency distribution"
+          soWhat="Prioritize retention investment where high-frequency shoppers show declining recency."
           meta={rfmHeatmap}
         >
           <Chart option={rfmOption} height={320} />
         </ChartCard>
-        <InsightCard title="Executive Insights" items={insights} />
+        <InsightCard title="Leadership Action Signals" items={insights} />
       </section>
     </div>
   );

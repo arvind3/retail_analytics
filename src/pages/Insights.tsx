@@ -188,7 +188,7 @@ LIMIT 20;`;
   if (error) {
     return (
       <div className="chart-card p-6 text-sm text-ink-600">
-        Failed to load insights: {error}
+        Unable to load customer and promotion intelligence: {error}
       </div>
     );
   }
@@ -244,7 +244,7 @@ LIMIT 20;`;
         tooltip: { trigger: 'axis' },
         xAxis: { type: 'category', data: redeemByDept.rows.map((row) => row.department) },
         yAxis: { type: 'value' },
-        series: [{ type: 'bar', data: redeemByDept.rows.map((row) => row.redemptions) }]
+        series: [{ type: 'bar', data: redeemByDept.rows.map((row) => Number(row.redemptions ?? 0)) }]
       }
     : null;
 
@@ -253,7 +253,7 @@ LIMIT 20;`;
         tooltip: { trigger: 'axis' },
         xAxis: { type: 'category', data: redeemByIncome.rows.map((row) => row.income_band) },
         yAxis: { type: 'value' },
-        series: [{ type: 'bar', data: redeemByIncome.rows.map((row) => row.redemptions) }]
+        series: [{ type: 'bar', data: redeemByIncome.rows.map((row) => Number(row.redemptions ?? 0)) }]
       }
     : null;
 
@@ -273,11 +273,48 @@ LIMIT 20;`;
 
   return (
     <div className="space-y-6">
+      <section className="chart-card p-6">
+        <h2 className="text-lg font-semibold text-ink-900">Customer & Promotion Intelligence</h2>
+        <p className="mt-1 text-sm text-ink-600">
+          Understand retention quality, promotion response, and campaign effectiveness to guide
+          targeted growth actions.
+        </p>
+        <div className="mt-4 grid gap-3 md:grid-cols-3">
+          <div className="rounded-xl border border-ink-100 bg-white/70 p-4">
+            <div className="text-xs font-semibold uppercase tracking-[0.2em] text-ink-500">
+              What You Are Seeing
+            </div>
+            <p className="mt-2 text-sm text-ink-600">
+              Retention cohorts, segment response to promotions, campaign lift, and basket affinity
+              behavior.
+            </p>
+          </div>
+          <div className="rounded-xl border border-ink-100 bg-white/70 p-4">
+            <div className="text-xs font-semibold uppercase tracking-[0.2em] text-ink-500">
+              Why It Matters
+            </div>
+            <p className="mt-2 text-sm text-ink-600">
+              These patterns reveal which customers to retain, where promotions work best, and
+              where cross-sell can accelerate growth.
+            </p>
+          </div>
+          <div className="rounded-xl border border-ink-100 bg-white/70 p-4">
+            <div className="text-xs font-semibold uppercase tracking-[0.2em] text-ink-500">
+              How To Interpret
+            </div>
+            <p className="mt-2 text-sm text-ink-600">
+              Focus on cohort decay, then compare segment redemption and campaign lift to prioritize
+              high-ROI customer actions.
+            </p>
+          </div>
+        </div>
+      </section>
+
       {cohort && cohortOption ? (
         <ChartCard
-          title="Household Retention Cohorts"
-          subtitle="New vs repeat buyers across the first 12 weeks"
-          soWhat="Retention decay highlights where early life-cycle interventions are needed."
+          title="Customer Retention Cohorts"
+          subtitle="New versus repeat buying behavior across the first 12 weeks"
+          soWhat="Retention decay pinpoints where onboarding, loyalty, or lifecycle interventions should be activated."
           meta={cohort}
           testId="chart-cohort"
         >
@@ -290,9 +327,9 @@ LIMIT 20;`;
       <section className="grid gap-6 xl:grid-cols-2">
         {redeemByDept && deptOption ? (
           <ChartCard
-            title="Coupon Redemption by Department"
-            subtitle="Where coupons convert the most"
-            soWhat="Promo funds should concentrate on departments with the highest redemption velocity."
+            title="Promotion Response by Category"
+            subtitle="Where promotions convert with the highest volume"
+            soWhat="Direct promotion spend toward categories with proven conversion and incremental behavior."
             meta={redeemByDept}
           >
             <Chart option={deptOption} height={320} />
@@ -302,9 +339,9 @@ LIMIT 20;`;
         )}
         {redeemByIncome && incomeOption ? (
           <ChartCard
-            title="Coupon Redemption by Income Segment"
-            subtitle="Household segment response"
-            soWhat="Segment response indicates which income cohorts are most promotion-sensitive."
+            title="Promotion Response by Income Segment"
+            subtitle="Customer segment sensitivity to offers"
+            soWhat="Segment-level response supports differentiated promotion strategies and budget allocation."
             meta={redeemByIncome}
           >
             <Chart option={incomeOption} height={320} />
@@ -316,9 +353,9 @@ LIMIT 20;`;
 
       {campaignLift && campaignOption ? (
         <ChartCard
-          title="Campaign Purchase Lift (Proxy)"
-          subtitle="Campaign window vs prior 4-week baseline"
-          soWhat="Campaign lift highlights which programs drive incremental spend, not just redistribution."
+          title="Campaign Incremental Lift"
+          subtitle="Campaign window performance versus prior four-week baseline"
+          soWhat="Lift identifies which campaign types create incremental demand versus simple demand shifting."
           meta={campaignLift}
         >
           <Chart option={campaignOption} height={320} />
@@ -329,9 +366,9 @@ LIMIT 20;`;
 
       {crossSell ? (
         <ChartCard
-          title="Top Cross-Sell Pairs"
-          subtitle="Most frequent co-occurring products in baskets"
-          soWhat="Cross-sell pairs guide merchandising adjacency and bundle strategies."
+          title="Top Basket Affinity Pairs"
+          subtitle="Most frequent category co-occurrence in shopping baskets"
+          soWhat="Affinity pairs inform bundle design, adjacency strategy, and cross-sell activation."
           meta={crossSell}
         >
           <Table columns={crossSell.columns} rows={crossSell.rows} />

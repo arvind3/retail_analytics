@@ -9,8 +9,8 @@
 export const prebuiltQueries: PrebuiltQuery[] = [
   {
     id: 'weekly-revenue',
-    title: 'Weekly Revenue Trend (YoY-ish)',
-    description: 'Weekly sales with prior-year comparison using a 52-week offset.',
+    title: 'Weekly Net Sales Momentum',
+    description: 'Weekly net sales with prior-year reference using a 52-week offset.',
     tables: ['transactions'],
     sql: `WITH weekly AS (
   SELECT week, SUM(sales_value) AS revenue
@@ -28,8 +28,8 @@ ORDER BY week;`
   },
   {
     id: 'basket-distribution',
-    title: 'Basket Value Distribution',
-    description: 'Histogram of total basket spend for basket size profiling.',
+    title: 'Basket Size Distribution',
+    description: 'Distribution of basket spend to understand trip-value dynamics.',
     tables: ['transactions'],
     sql: `WITH baskets AS (
   SELECT basket_id, SUM(sales_value) AS basket_sales
@@ -64,8 +64,8 @@ ORDER BY bucket;`
   },
   {
     id: 'top-departments',
-    title: 'Top Departments by Sales',
-    description: 'Top departments ranked by total sales, used for Pareto views.',
+    title: 'Category Revenue Concentration',
+    description: 'Top categories ranked by net sales contribution for Pareto analysis.',
     tables: ['transactions', 'products'],
     sql: `SELECT p.department, SUM(t.sales_value) AS revenue
 FROM transactions t
@@ -76,8 +76,8 @@ LIMIT 12;`
   },
   {
     id: 'promo-effectiveness',
-    title: 'Promo Effectiveness',
-    description: 'Sales impact from coupon usage compared to non-promo baskets.',
+    title: 'Promotion Impact',
+    description: 'Net sales impact from promoted versus non-promoted baskets.',
     tables: ['transactions'],
     sql: `SELECT
   CASE
@@ -92,8 +92,8 @@ ORDER BY revenue DESC;`
   },
   {
     id: 'rfm-segmentation',
-    title: 'RFM Segmentation Snapshot',
-    description: 'Recency, frequency, monetary quartiles across households.',
+    title: 'Customer Value Segments',
+    description: 'Recency, frequency, and spend quartiles across customer households.',
     tables: ['transactions'],
     sql: `WITH household_metrics AS (
   SELECT
@@ -130,8 +130,8 @@ ORDER BY r, f, m;`
   },
   {
     id: 'cohort-retention',
-    title: 'Household Cohort Retention',
-    description: 'Retention by weekly cohort for the first 12 weeks.',
+    title: 'Customer Cohort Retention',
+    description: 'Retention trends by weekly customer cohort across the first 12 weeks.',
     tables: ['transactions'],
     sql: `WITH first_week AS (
   SELECT household_id, MIN(week) AS cohort_week
@@ -166,8 +166,8 @@ ORDER BY c.cohort_week, c.week_offset;`
   },
   {
     id: 'cross-sell',
-    title: 'Top Cross-Sell Pairs',
-    description: 'Top co-occurring products in the same basket.',
+    title: 'Top Basket Affinity Pairs',
+    description: 'Most frequent category pairs purchased together in the same basket.',
     tables: ['transactions', 'products'],
     sql: `WITH basket_items AS (
   SELECT basket_id, product_id
@@ -195,8 +195,8 @@ LIMIT 20;`
   },
   {
     id: 'campaign-lift',
-    title: 'Campaign Exposure Lift',
-    description: 'Proxy lift comparing campaign window sales to pre-campaign baseline.',
+    title: 'Campaign Incremental Lift',
+    description: 'Campaign-window lift versus pre-campaign baseline performance.',
     tables: ['transactions', 'campaigns', 'campaign_descriptions'],
     sql: `WITH campaign_sales AS (
   SELECT c.campaign_id, SUM(t.sales_value) AS campaign_sales

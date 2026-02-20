@@ -10,9 +10,9 @@ import { formatBytes, formatDurationMs, formatNumber } from '../lib/format';
 import { useDbState } from '../lib/dbState';
 
 const chartTypes = [
-  { id: 'none', label: 'No Chart' },
-  { id: 'bar', label: 'Bar' },
-  { id: 'line', label: 'Line' }
+  { id: 'none', label: 'No Visual' },
+  { id: 'bar', label: 'Column' },
+  { id: 'line', label: 'Trend' }
 ] as const;
 
 type ChartType = (typeof chartTypes)[number]['id'];
@@ -93,12 +93,49 @@ const SqlStudio = () => {
 
   return (
     <div className="space-y-6">
+      <section className="chart-card p-6">
+        <h2 className="text-lg font-semibold text-ink-900">Decision Lab</h2>
+        <p className="mt-1 text-sm text-ink-600">
+          Explore business questions instantly with in-browser SQL and convert results into
+          decision-ready evidence.
+        </p>
+        <div className="mt-4 grid gap-3 md:grid-cols-3">
+          <div className="rounded-xl border border-ink-100 bg-white/70 p-4">
+            <div className="text-xs font-semibold uppercase tracking-[0.2em] text-ink-500">
+              What You Are Seeing
+            </div>
+            <p className="mt-2 text-sm text-ink-600">
+              Curated analysis templates plus free-form SQL against the full in-session retail
+              dataset.
+            </p>
+          </div>
+          <div className="rounded-xl border border-ink-100 bg-white/70 p-4">
+            <div className="text-xs font-semibold uppercase tracking-[0.2em] text-ink-500">
+              Why It Matters
+            </div>
+            <p className="mt-2 text-sm text-ink-600">
+              Enables leaders and analysts to validate assumptions immediately without waiting on a
+              backend analytics queue.
+            </p>
+          </div>
+          <div className="rounded-xl border border-ink-100 bg-white/70 p-4">
+            <div className="text-xs font-semibold uppercase tracking-[0.2em] text-ink-500">
+              How To Interpret
+            </div>
+            <p className="mt-2 text-sm text-ink-600">
+              Use templates for common decisions, then refine filters and segments to isolate
+              action-ready opportunities.
+            </p>
+          </div>
+        </div>
+      </section>
+
       <div className="chart-card p-6">
         <div className="flex flex-wrap items-center justify-between gap-4">
           <div>
-            <h2 className="text-lg font-semibold text-ink-900">SQL Studio</h2>
+            <h2 className="text-lg font-semibold text-ink-900">Analyst Workspace</h2>
             <p className="text-sm text-ink-500">
-              Run analytical SQL in-memory with DuckDB-WASM. Prebuilt business queries included.
+              Run high-speed in-memory analysis with DuckDB-WASM. Business templates included.
             </p>
           </div>
           <div className="flex flex-wrap items-center gap-2">
@@ -131,7 +168,7 @@ const SqlStudio = () => {
             }}
           />
           <div className="rounded-xl border border-ink-100 bg-white/70 px-4 py-3 text-sm text-ink-600">
-            <div className="font-semibold text-ink-800">{activeQuery.title}</div>
+            <div className="font-semibold text-ink-800">Selected analysis template: {activeQuery.title}</div>
             <div>{activeQuery.description}</div>
           </div>
 
@@ -147,7 +184,7 @@ const SqlStudio = () => {
               onClick={run}
               className="rounded-full bg-accent-500 px-6 py-2 text-sm font-semibold text-white"
             >
-              Run query
+              Run analysis
             </button>
             <button
               type="button"
@@ -158,8 +195,8 @@ const SqlStudio = () => {
             </button>
             {result ? (
               <div className="text-xs text-ink-500">
-                Query time {formatDurationMs(result.elapsedMs)} · Rows {formatNumber(result.rowCount)} · Data loaded{' '}
-                {formatBytes(dbState.loadedBytes)} · Memory{' '}
+                Runtime {formatDurationMs(result.elapsedMs)} · Rows returned {formatNumber(result.rowCount)} · Data in session{' '}
+                {formatBytes(dbState.loadedBytes)} · Browser memory{' '}
                 {result.memoryBytes ? formatBytes(result.memoryBytes) : 'n/a'} · Rows scanned{' '}
                 {result.scannedRows ?? 'n/a'}
               </div>
@@ -168,10 +205,10 @@ const SqlStudio = () => {
         </div>
       </div>
 
-      {loading ? <LoadingPanel label="Running query" /> : null}
+      {loading ? <LoadingPanel label="Running analysis" /> : null}
       {error ? (
         <div className="chart-card p-6 text-sm text-ink-600">
-          Query failed: {error}
+          Analysis failed: {error}
         </div>
       ) : null}
 
@@ -181,7 +218,8 @@ const SqlStudio = () => {
             <div className="chart-card p-6">
               <Chart option={chartOption} height={320} />
               <p className="mt-4 text-sm text-ink-600">
-                So what? A quick visual check to validate the shape of your query output.
+                Business interpretation: Use this view to quickly validate trend direction and
+                magnitude before deciding on deeper investigation.
               </p>
             </div>
           ) : null}
