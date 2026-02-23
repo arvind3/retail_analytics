@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Perspectives · Retail Decision Intelligence</title>
+  <meta name="description" content="Explore the Retail Decision Intelligence platform from four perspectives: Engineering, Product, Capability, and Executive." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            bg: '#0A0F1E',
+            card: '#131929',
+            raised: '#1A2338',
+            indigo: { DEFAULT: '#6366F1', light: '#818CF8', dark: '#4F46E5' },
+            emerald: { DEFAULT: '#10B981', light: '#34D399' },
+            amber: { DEFAULT: '#F59E0B', light: '#FBBF24' },
+            rose: { DEFAULT: '#F43F5E', light: '#FB7185' },
+            sky: { DEFAULT: '#0EA5E9', light: '#38BDF8' },
+          },
+          fontFamily: { sans: ['Inter', 'system-ui'], mono: ['"JetBrains Mono"', 'monospace'] }
+        }
+      }
+    }
+  </script>
+  <style>
+    body { background-color: #0A0F1E; color: #F8FAFC; font-family: 'Inter', system-ui; -webkit-font-smoothing: antialiased; }
+    ::-webkit-scrollbar { width: 6px; } ::-webkit-scrollbar-thumb { background: #334155; border-radius: 3px; }
+    @keyframes fadeUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+    .fade-up { animation: fadeUp 0.6s ease both; }
+    .fade-up-2 { animation: fadeUp 0.6s ease 0.1s both; }
+    .fade-up-3 { animation: fadeUp 0.6s ease 0.2s both; }
+    .card-hover { transition: transform 0.2s ease, box-shadow 0.2s ease; }
+    .card-hover:hover { transform: translateY(-2px); box-shadow: 0 8px 32px rgba(0,0,0,0.4); }
+  </style>
+</head>
+<body>
+  <div id="root"></div>
+  <script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <script type="text/babel">
+    const { useState } = React;
+
+    const NAV_LINKS = [
+      { href: './index.html', label: 'Perspectives', current: true },
+      { href: '../engineering.html', label: 'Engineering' },
+      { href: '../product.html', label: 'Product' },
+      { href: '../capability.html', label: 'Capability' },
+      { href: '../executive.html', label: 'Executive' },
+    ];
+
+    const Nav = () => {
+      const [open, setOpen] = useState(false);
+      return (
+        <nav className="sticky top-0 z-50 border-b border-white/[0.06] bg-bg/90 backdrop-blur-md">
+          <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-3 md:px-8">
+            <a href="https://arvind3.github.io/retail_analytics/#/" className="text-sm font-semibold text-indigo hover:text-indigo-light transition">
+              Retail Decision Intelligence
+            </a>
+            <button onClick={() => setOpen(!open)} className="flex h-11 w-11 items-center justify-center rounded-lg text-slate-400 hover:bg-white/[0.04] md:hidden" aria-label="Toggle menu">
+              {open
+                ? <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M18 6L6 18M6 6l12 12"/></svg>
+                : <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M3 12h18M3 6h18M3 18h18"/></svg>
+              }
+            </button>
+            <div className="hidden md:flex gap-1">
+              {NAV_LINKS.map(l => (
+                <a key={l.href} href={l.href}
+                  className={`px-3 py-1.5 rounded-full text-sm transition ${l.current ? 'bg-indigo text-white' : 'text-slate-400 hover:text-white hover:bg-white/[0.05]'}`}
+                >{l.label}</a>
+              ))}
+            </div>
+          </div>
+          {open && (
+            <div className="md:hidden border-t border-white/[0.06] px-4 pb-4 pt-2 flex flex-col gap-1">
+              {NAV_LINKS.map(l => (
+                <a key={l.href} href={l.href}
+                  className={`min-h-[44px] flex items-center px-3 text-sm rounded-lg ${l.current ? 'text-indigo-light' : 'text-slate-300 hover:text-white hover:bg-white/[0.04]'}`}
+                >{l.label}</a>
+              ))}
+            </div>
+          )}
+        </nav>
+      );
+    };
+
+    const PERSPECTIVES = [
+      {
+        href: '../engineering.html',
+        label: 'Engineering',
+        accent: '#6366F1',
+        accentBg: 'rgba(99,102,241,0.12)',
+        icon: '⚙',
+        tagline: 'For Developers & Architects',
+        desc: 'DuckDB-WASM architecture, tech stack deep-dive, design decisions, and getting started guide.',
+      },
+      {
+        href: '../product.html',
+        label: 'Product',
+        accent: '#10B981',
+        accentBg: 'rgba(16,185,129,0.12)',
+        icon: '◎',
+        tagline: 'For Product Managers & Users',
+        desc: 'User journey, key features, persona fit, and the before/after impact of instant analytics.',
+      },
+      {
+        href: '../capability.html',
+        label: 'Capability',
+        accent: '#F59E0B',
+        accentBg: 'rgba(245,158,11,0.12)',
+        icon: '⬡',
+        tagline: 'For Business Strategists',
+        desc: 'Cross-domain capability map, combination plays, and emerging opportunities with WASM analytics.',
+      },
+      {
+        href: '../executive.html',
+        label: 'Executive',
+        accent: '#0EA5E9',
+        accentBg: 'rgba(14,165,233,0.12)',
+        icon: '◈',
+        tagline: 'For C-Suite & Leadership',
+        desc: 'Strategic value, market opportunity, traction evidence, and the infrastructure-free analytics thesis.',
+      },
+    ];
+
+    const STATS = [
+      { value: '3', label: 'App Views' },
+      { value: '5', label: 'KPI Metrics' },
+      { value: '6', label: 'Chart Types' },
+      { value: '100%', label: 'In-Browser' },
+    ];
+
+    const App = () => (
+      <div style={{ background: '#0A0F1E', minHeight: '100vh' }}>
+        <div className="h-px bg-gradient-to-r from-transparent via-indigo to-transparent" />
+        <Nav />
+
+        {/* Hero */}
+        <section className="mx-auto max-w-4xl px-4 pt-20 pb-12 text-center md:px-8">
+          <div className="fade-up inline-flex items-center gap-2 rounded-full border border-indigo/40 bg-indigo/10 px-4 py-1.5 text-xs font-semibold uppercase tracking-wider text-indigo-light mb-6">
+            Retail Decision Intelligence
+          </div>
+          <h1 className="fade-up-2 text-4xl font-bold tracking-tight text-slate-50 md:text-5xl lg:text-6xl">
+            Analytics that moves<br className="hidden sm:inline" /> at the speed of decisions
+          </h1>
+          <p className="fade-up-3 mt-6 max-w-2xl mx-auto text-lg text-slate-400">
+            In-browser retail analytics powered by DuckDB-WASM. No backend. No infrastructure.
+            Executive-ready insights delivered in seconds, not sprints.
+          </p>
+          <div className="fade-up-3 mt-8 flex flex-wrap justify-center gap-3">
+            <a href="https://arvind3.github.io/retail_analytics/#/"
+              className="rounded-full bg-indigo px-6 py-3 text-sm font-semibold text-white transition hover:bg-indigo-dark">
+              Open Live Dashboard →
+            </a>
+            <a href="https://github.com/arvind3/retail_analytics"
+              className="rounded-full border border-white/[0.10] bg-white/[0.04] px-6 py-3 text-sm font-semibold text-slate-300 transition hover:border-indigo hover:text-white">
+              View on GitHub
+            </a>
+          </div>
+        </section>
+
+        {/* Perspective Cards */}
+        <section className="mx-auto max-w-6xl px-4 pb-16 md:px-8">
+          <div className="grid gap-5 sm:grid-cols-2">
+            {PERSPECTIVES.map((p, i) => (
+              <a key={p.label} href={p.href}
+                className="card-hover block rounded-2xl border border-white/[0.08] bg-card p-6 no-underline"
+                style={{ animationDelay: `${i * 0.08}s` }}>
+                <div className="flex items-start justify-between gap-4">
+                  <div>
+                    <div className="inline-flex items-center gap-2 rounded-full px-3 py-1 text-xs font-semibold" style={{ background: p.accentBg, color: p.accent }}>
+                      {p.icon} {p.label}
+                    </div>
+                    <p className="mt-3 text-xs font-semibold uppercase tracking-wider text-slate-500">{p.tagline}</p>
+                    <p className="mt-2 text-sm text-slate-400 leading-relaxed">{p.desc}</p>
+                  </div>
+                  <svg className="mt-1 shrink-0 text-slate-600" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <path d="M5 12h14M12 5l7 7-7 7"/>
+                  </svg>
+                </div>
+                <div className="mt-4 h-px" style={{ background: `linear-gradient(90deg, ${p.accent}40, transparent)` }} />
+              </a>
+            ))}
+          </div>
+        </section>
+
+        {/* Stats strip */}
+        <section className="border-t border-white/[0.06] bg-card/50">
+          <div className="mx-auto max-w-4xl px-4 py-10 md:px-8">
+            <div className="grid grid-cols-2 gap-6 sm:grid-cols-4">
+              {STATS.map(s => (
+                <div key={s.label} className="text-center">
+                  <div className="text-3xl font-bold text-slate-50">{s.value}</div>
+                  <div className="mt-1 text-xs font-semibold uppercase tracking-wider text-slate-500">{s.label}</div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* Footer */}
+        <footer className="border-t border-white/[0.06] px-4 py-8 text-center">
+          <p className="text-xs text-slate-600">
+            <a href="https://github.com/arvind3/retail_analytics" className="hover:text-slate-400 transition">github.com/arvind3/retail_analytics</a>
+            {' · '}
+            <a href="https://arvind3.github.io/retail_analytics/#/" className="hover:text-slate-400 transition">Live Demo</a>
+          </p>
+        </footer>
+      </div>
+    );
+
+    ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+  </script>
+</body>
+</html>

@@ -1,6 +1,7 @@
 # Retail Decision Intelligence Platform
-[![Live Demo](https://img.shields.io/badge/Live%20Dashboard-Open%20Now-2c7f67?style=for-the-badge&logo=githubpages&logoColor=white)](https://arvind3.github.io/retail_analytics/#/)
-[![Repository](https://img.shields.io/badge/GitHub-Repository-1c1914?style=for-the-badge&logo=github)](https://github.com/arvind3/retail_analytics)
+[![Live Demo](https://img.shields.io/badge/Live%20Dashboard-Open%20Now-6366F1?style=for-the-badge&logo=githubpages&logoColor=white)](https://arvind3.github.io/retail_analytics/#/)
+[![Perspectives](https://img.shields.io/badge/Perspectives-View%20Pages-10B981?style=for-the-badge)](https://arvind3.github.io/retail_analytics/docs/perspectives/)
+[![Repository](https://img.shields.io/badge/GitHub-Repository-0F172A?style=for-the-badge&logo=github)](https://github.com/arvind3/retail_analytics)
 
 An enterprise-ready retail analytics experience that delivers executive insights, customer intelligence, and ad hoc analysis directly in the browser with DuckDB-WASM.
 
@@ -137,6 +138,21 @@ npm run lint
 npm run typecheck
 npm run e2e
 ```
+
+## Perspectives Pages
+
+Professionally designed awareness pages presenting this solution to four distinct audiences.
+Deployed alongside the main app via GitHub Pages — no separate hosting required.
+
+| Page | Audience | URL |
+|------|----------|-----|
+| Perspectives (Index) | All visitors | https://arvind3.github.io/retail_analytics/docs/perspectives/ |
+| Engineering | Developers & architects | https://arvind3.github.io/retail_analytics/docs/engineering.html |
+| Product | Product managers & users | https://arvind3.github.io/retail_analytics/docs/product.html |
+| Capability | Business strategists | https://arvind3.github.io/retail_analytics/docs/capability.html |
+| Executive | C-suite & leadership | https://arvind3.github.io/retail_analytics/docs/executive.html |
+
+> Pages are static HTML (React CDN + Tailwind CDN) co-deployed into `dist/docs/` by the GitHub Actions workflow.
 
 ## Future Roadmap
 1. Scenario Planning: Add what-if simulation for pricing, promotions, and category mix shifts.

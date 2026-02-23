@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Capability · Retail Decision Intelligence</title>
+  <meta name="description" content="Cross-domain capability map, combination plays, and emerging opportunities with in-browser WASM analytics." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            bg: '#0A0F1E', card: '#131929', raised: '#1A2338',
+            indigo: { DEFAULT: '#6366F1', light: '#818CF8', dark: '#4F46E5' },
+            emerald: { DEFAULT: '#10B981', light: '#34D399' },
+            amber: { DEFAULT: '#F59E0B', light: '#FBBF24' },
+            sky: { DEFAULT: '#0EA5E9', light: '#38BDF8' },
+            violet: { DEFAULT: '#8B5CF6', light: '#A78BFA' },
+          },
+          fontFamily: { sans: ['Inter', 'system-ui'], mono: ['"JetBrains Mono"', 'monospace'] }
+        }
+      }
+    }
+  </script>
+  <style>
+    body { background-color: #0A0F1E; color: #F8FAFC; font-family: 'Inter', system-ui; -webkit-font-smoothing: antialiased; }
+    ::-webkit-scrollbar { width: 6px; } ::-webkit-scrollbar-thumb { background: #334155; border-radius: 3px; }
+    @keyframes fadeUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+    .fade-up { animation: fadeUp 0.6s ease both; }
+  </style>
+</head>
+<body>
+  <div id="root"></div>
+  <script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <script type="text/babel">
+    const { useState } = React;
+
+    const NAV_LINKS = [
+      { href: './perspectives/index.html', label: 'Perspectives' },
+      { href: './engineering.html', label: 'Engineering' },
+      { href: './product.html', label: 'Product' },
+      { href: './capability.html', label: 'Capability', current: true },
+      { href: './executive.html', label: 'Executive' },
+    ];
+
+    const Nav = () => {
+      const [open, setOpen] = useState(false);
+      return (
+        <nav className="sticky top-0 z-50 border-b border-white/[0.06] bg-bg/90 backdrop-blur-md">
+          <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-3 md:px-8">
+            <a href="https://arvind3.github.io/retail_analytics/#/" className="text-sm font-semibold text-indigo hover:text-indigo-light transition">Retail Decision Intelligence</a>
+            <button onClick={() => setOpen(!open)} className="flex h-11 w-11 items-center justify-center rounded-lg text-slate-400 hover:bg-white/[0.04] md:hidden">
+              {open ? <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M18 6L6 18M6 6l12 12"/></svg>
+                     : <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M3 12h18M3 6h18M3 18h18"/></svg>}
+            </button>
+            <div className="hidden md:flex gap-1">
+              {NAV_LINKS.map(l => <a key={l.href} href={l.href} className={`px-3 py-1.5 rounded-full text-sm transition ${l.current ? 'bg-amber text-white' : 'text-slate-400 hover:text-white hover:bg-white/[0.05]'}`}>{l.label}</a>)}
+            </div>
+          </div>
+          {open && <div className="md:hidden border-t border-white/[0.06] px-4 pb-4 pt-2 flex flex-col gap-1">
+            {NAV_LINKS.map(l => <a key={l.href} href={l.href} className={`min-h-[44px] flex items-center px-3 text-sm rounded-lg ${l.current ? 'text-amber-light' : 'text-slate-300 hover:text-white hover:bg-white/[0.04]'}`}>{l.label}</a>)}
+          </div>}
+        </nav>
+      );
+    };
+
+    const DOMAINS = [
+      { name: 'Retail Analytics', color: '#6366F1', problem: 'Promotion ROI, category concentration, customer RFM', solution: 'In-browser SQL over Parquet transaction data', impact: 'Decisions in seconds without BI queues' },
+      { name: 'Financial Services', color: '#10B981', problem: 'Portfolio dashboards require expensive cloud compute', solution: 'Client-side DuckDB queries over Parquet snapshots', impact: 'Zero backend cost for internal analytics portals' },
+      { name: 'Healthcare', color: '#38BDF8', problem: 'Patient cohort analysis with strict data privacy requirements', solution: 'Data never leaves the browser — privacy-safe by design', impact: 'HIPAA-friendly exploratory analytics layer' },
+      { name: 'Supply Chain', color: '#F59E0B', problem: 'Inventory and demand signal analysis delayed by ETL pipelines', solution: 'Parquet snapshots refreshed via CI, queried in-browser', impact: 'Operational dashboards without warehouse infrastructure' },
+      { name: 'EdTech', color: '#A78BFA', problem: 'Student performance cohorts spread across multiple data exports', solution: 'Unified Parquet dataset, DuckDB cohort analysis in browser', impact: 'Instructors get retention insight without data team support' },
+    ];
+
+    const BLOCKS = [
+      { name: 'DuckDB-WASM', color: '#6366F1', desc: 'Full SQL engine (GROUP BY, window functions, JOINs, NTILE) running as WebAssembly in the browser.' },
+      { name: 'Parquet Ingest Pipeline', color: '#F59E0B', desc: 'Python scripts convert raw source data to columnar Parquet via pyarrow. Optimized for browser fetch size.' },
+      { name: 'React Component Layer', color: '#38BDF8', desc: 'Reusable ChartCard, StatCard, Table, and InsightCard components for rapid dashboard assembly.' },
+      { name: 'ECharts Visualization', color: '#10B981', desc: 'Line, bar, heatmap, Pareto, and scatter charts with a shared dark analytics theme registered via echarts.registerTheme.' },
+      { name: 'GitHub Pages Static Delivery', color: '#94A3B8', desc: 'Zero-cost, globally distributed CDN for Parquet files and the React app bundle. No server needed.' },
+    ];
+
+    const COMBOS = [
+      { title: 'DuckDB-WASM + Remote Parquet (S3 / R2)', color: '#6366F1', desc: 'DuckDB-WASM supports fetching Parquet files via HTTP range requests. Replace local Parquet with partitioned files on S3 or Cloudflare R2 for datasets too large to bundle.' },
+      { title: 'This Stack + Observable Framework', color: '#10B981', desc: 'Observable\'s notebook format enables narrative-first analytical storytelling. Use DuckDB-WASM as the query engine and this component library as the visualization layer.' },
+      { title: 'This Stack + Cloudflare Pages', color: '#F59E0B', desc: 'Cloudflare Pages adds edge caching, automatic HTTPS, and custom domains. Larger Parquet files benefit from Cloudflare\'s global CDN latency vs. GitHub Pages regional serving.' },
+    ];
+
+    const App = () => (
+      <div style={{ minHeight: '100vh', background: '#0A0F1E' }}>
+        <div className="h-px bg-gradient-to-r from-transparent via-amber to-transparent" />
+        <Nav />
+
+        {/* Hero */}
+        <section className="mx-auto max-w-4xl px-4 pt-16 pb-12 md:px-8">
+          <div className="fade-up inline-flex items-center gap-2 rounded-full border border-amber/40 bg-amber/10 px-4 py-1.5 text-xs font-semibold uppercase tracking-wider text-amber-light mb-4">
+            Capability Perspective
+          </div>
+          <h1 className="text-3xl font-bold tracking-tight text-slate-50 md:text-4xl lg:text-5xl">
+            Analytics Infrastructure<br className="hidden sm:inline" /> Is Now Optional
+          </h1>
+          <p className="mt-4 max-w-2xl text-lg text-slate-400">
+            This is not just a dashboard. It is proof that the infrastructure tier of the analytics
+            stack — servers, databases, APIs — can be entirely eliminated from the delivery equation.
+          </p>
+        </section>
+
+        {/* Capability Map */}
+        <section className="mx-auto max-w-5xl px-4 pb-14 md:px-8">
+          <h2 className="text-xl font-semibold text-slate-50 mb-6">Core Capability Map</h2>
+          <div className="rounded-2xl border border-white/[0.08] bg-card p-6 md:p-8">
+            <div className="flex flex-col items-center gap-4">
+              <div className="rounded-full border border-amber/40 bg-amber/10 px-6 py-3 text-sm font-semibold text-amber-light text-center">
+                In-Browser Analytics Runtime
+              </div>
+              <div className="flex flex-wrap justify-center gap-3">
+                {['Retail Analytics', 'Financial Services', 'Healthcare Reporting', 'Supply Chain Intelligence', 'EdTech Dashboards', 'Risk & Compliance'].map((d, i) => {
+                  const colors = ['#6366F1','#10B981','#38BDF8','#F59E0B','#A78BFA','#FB7185'];
+                  return (
+                    <div key={d} className="rounded-xl border border-white/[0.08] bg-raised px-4 py-2 text-xs font-semibold" style={{ color: colors[i] }}>
+                      {d}
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* Cross-Domain Applications */}
+        <section className="mx-auto max-w-5xl px-4 pb-14 md:px-8">
+          <h2 className="text-xl font-semibold text-slate-50 mb-6">Cross-Domain Applications</h2>
+          <div className="space-y-3">
+            {DOMAINS.map(d => (
+              <div key={d.name} className="rounded-xl border border-white/[0.08] bg-card p-5">
+                <div className="text-sm font-semibold mb-3" style={{ color: d.color }}>{d.name}</div>
+                <div className="grid gap-3 sm:grid-cols-3">
+                  <div><div className="text-xs font-semibold uppercase tracking-wider text-slate-500 mb-1">Problem</div><p className="text-xs text-slate-400">{d.problem}</p></div>
+                  <div><div className="text-xs font-semibold uppercase tracking-wider text-slate-500 mb-1">Solution</div><p className="text-xs text-slate-400">{d.solution}</p></div>
+                  <div><div className="text-xs font-semibold uppercase tracking-wider text-slate-500 mb-1">Impact</div><p className="text-xs text-slate-400">{d.impact}</p></div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        {/* Building Blocks */}
+        <section className="mx-auto max-w-5xl px-4 pb-14 md:px-8">
+          <h2 className="text-xl font-semibold text-slate-50 mb-6">Capability Building Blocks</h2>
+          <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+            {BLOCKS.map(b => (
+              <div key={b.name} className="rounded-xl border border-white/[0.08] bg-card p-4">
+                <div className="text-sm font-semibold mb-1.5" style={{ color: b.color }}>{b.name}</div>
+                <p className="text-xs text-slate-400 leading-relaxed">{b.desc}</p>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        {/* Combination Plays */}
+        <section className="mx-auto max-w-5xl px-4 pb-14 md:px-8">
+          <h2 className="text-xl font-semibold text-slate-50 mb-6">Combination Plays</h2>
+          <div className="grid gap-4 md:grid-cols-3">
+            {COMBOS.map(c => (
+              <div key={c.title} className="rounded-xl border border-white/[0.08] bg-card p-5">
+                <div className="h-1 w-12 rounded-full mb-3" style={{ background: c.color }} />
+                <div className="text-sm font-semibold text-slate-100 mb-2">{c.title}</div>
+                <p className="text-xs text-slate-400 leading-relaxed">{c.desc}</p>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        {/* Emerging Opportunity */}
+        <section className="mx-auto max-w-5xl px-4 pb-16 md:px-8">
+          <div className="rounded-2xl border border-indigo/20 bg-indigo/5 p-6 md:p-8">
+            <h2 className="text-lg font-semibold text-slate-50 mb-3">Emerging Opportunity: WASM + OPFS</h2>
+            <p className="text-slate-400 leading-relaxed text-sm">
+              DuckDB-WASM is gaining support for the Origin Private File System (OPFS) — a browser API
+              that allows truly persistent storage. This unlocks fully offline-capable enterprise dashboards
+              where analysts can cache Parquet datasets locally, work without network access, and sync
+              updates incrementally. Combined with Parquet's columnar format and DuckDB's predicate pushdown,
+              this architecture path leads to analytics experiences that feel like local native apps,
+              served as web pages, with zero backend.
+            </p>
+          </div>
+        </section>
+
+        <footer className="border-t border-white/[0.06] px-4 py-6 text-center">
+          <p className="text-xs text-slate-600">
+            <a href="https://github.com/arvind3/retail_analytics" className="hover:text-slate-400 transition">github.com/arvind3/retail_analytics</a>
+            {' · '}
+            <a href="https://arvind3.github.io/retail_analytics/#/" className="hover:text-slate-400 transition">Live Demo</a>
+          </p>
+        </footer>
+      </div>
+    );
+
+    ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+  </script>
+</body>
+</html>

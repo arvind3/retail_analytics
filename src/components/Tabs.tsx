@@ -1,4 +1,4 @@
-﻿const Tabs = ({
+const Tabs = ({
   items,
   active,
   onChange
@@ -13,10 +13,10 @@
         key={item.id}
         type="button"
         onClick={() => onChange(item.id)}
-        className={`rounded-full border px-4 py-2 text-xs font-semibold uppercase tracking-wide transition ${
+        className={`rounded-full border px-4 py-2 text-xs font-semibold uppercase tracking-wide transition-all duration-150 ${
           active === item.id
-            ? 'border-accent-500 bg-accent-500 text-white'
-            : 'border-ink-200 bg-white/80 text-ink-600 hover:border-accent-300'
+            ? 'border-indigo-500 bg-indigo-500 text-white'
+            : 'border-white/[0.10] bg-white/[0.04] text-slate-400 hover:border-indigo-600 hover:text-slate-200'
         }`}
       >
         {item.label}

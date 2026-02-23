@@ -8,7 +8,7 @@ const Chart = ({ option, height = 320 }: { option: unknown; height?: number }) =
     if (!ref.current) {
       return;
     }
-    const chart = echarts.init(ref.current, undefined, { renderer: 'canvas' });
+    const chart = echarts.init(ref.current, 'dark-analytics', { renderer: 'canvas' });
     chart.setOption(option as echarts.EChartsOption);
 
     const resizeObserver = new ResizeObserver(() => chart.resize());

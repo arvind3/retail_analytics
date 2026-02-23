@@ -1,4 +1,4 @@
-﻿import { ReactNode } from 'react';
+import { ReactNode } from 'react';
 import { NavLink } from 'react-router-dom';
 import DataStatus from './DataStatus';
 
@@ -10,51 +10,69 @@ const links = [
 
 const Layout = ({ children }: { children: ReactNode }) => (
   <div className="app-shell texture">
-    <div className="mx-auto flex min-h-screen max-w-6xl flex-col gap-6 px-6 pb-12 pt-10">
-      <header className="flex flex-col gap-6">
-        <div className="flex flex-col gap-2">
-          <span className="badge">Enterprise Retail Analytics</span>
-          <h1 className="font-serif text-4xl text-ink-900">
-            Retail Decision Intelligence
-          </h1>
-          <p className="max-w-2xl text-base text-ink-600">
-            Executive-ready retail intelligence delivered with in-browser analytics. Understand
-            sales momentum, customer retention, promotion performance, and category opportunity in
-            one decision workflow.
-          </p>
-          <div className="flex flex-wrap gap-2 text-xs text-ink-600">
-            <span className="rounded-full border border-ink-200 bg-white/70 px-3 py-1">
-              Zero backend analytics runtime
-            </span>
-            <span className="rounded-full border border-ink-200 bg-white/70 px-3 py-1">
-              Privacy-safe client-side execution
-            </span>
-            <span className="rounded-full border border-ink-200 bg-white/70 px-3 py-1">
-              Executive KPI + decision guidance
+    {/* Top indigo accent line */}
+    <div className="h-px bg-gradient-to-r from-transparent via-indigo-500 to-transparent" />
+
+    {/* Sticky header */}
+    <header className="sticky top-0 z-40 border-b border-white/[0.06] bg-[#0A0F1E]/90 backdrop-blur-md">
+      <div className="px-6 lg:px-10 xl:px-16">
+        {/* Row 1: badge + data status */}
+        <div className="flex items-center justify-between py-3">
+          <div className="flex items-center gap-3">
+            <span className="badge">Enterprise Retail Analytics</span>
+            <span className="hidden text-xs text-slate-500 sm:inline">
+              Powered by DuckDB-WASM
             </span>
           </div>
+          <DataStatus />
         </div>
-        <nav className="flex flex-wrap gap-3">
-          {links.map((link) => (
-            <NavLink
-              key={link.to}
-              to={link.to}
-              className={({ isActive }) =>
-                `rounded-full border px-4 py-2 text-sm font-semibold transition ${
-                  isActive
-                    ? 'border-accent-500 bg-accent-500 text-white'
-                    : 'border-ink-200 bg-white/80 text-ink-700 hover:border-accent-300'
-                }`
-              }
-            >
-              {link.label}
-            </NavLink>
-          ))}
-        </nav>
-        <DataStatus />
-      </header>
-      <main className="flex-1">{children}</main>
-    </div>
+
+        {/* Row 2: title + subtitle + nav */}
+        <div className="pb-5">
+          <h1 className="text-2xl font-semibold tracking-tight text-slate-50 lg:text-3xl">
+            Retail Decision Intelligence
+          </h1>
+          <p className="mt-1 max-w-2xl text-sm text-slate-400">
+            Executive-ready retail analytics delivered in-browser. Understand sales momentum,
+            customer retention, promotion performance, and category opportunity in one workflow.
+          </p>
+          <div className="mt-3 flex flex-wrap gap-2">
+            {[
+              'Zero backend analytics runtime',
+              'Privacy-safe client-side execution',
+              'Executive KPI + decision guidance',
+            ].map((tag) => (
+              <span
+                key={tag}
+                className="rounded-full border border-white/[0.08] bg-white/[0.04] px-3 py-1 text-xs text-slate-400"
+              >
+                {tag}
+              </span>
+            ))}
+          </div>
+          <nav className="mt-4 flex flex-wrap gap-2">
+            {links.map((link) => (
+              <NavLink
+                key={link.to}
+                to={link.to}
+                className={({ isActive }) =>
+                  `rounded-full border px-4 py-2 text-sm font-semibold transition-all duration-150 ${
+                    isActive
+                      ? 'border-indigo-500 bg-indigo-500 text-white shadow-glow'
+                      : 'border-white/[0.10] bg-white/[0.04] text-slate-300 hover:border-indigo-600 hover:bg-white/[0.07] hover:text-slate-100'
+                  }`
+                }
+              >
+                {link.label}
+              </NavLink>
+            ))}
+          </nav>
+        </div>
+      </div>
+    </header>
+
+    {/* Main content — full width */}
+    <main className="px-6 py-8 lg:px-10 xl:px-16">{children}</main>
   </div>
 );
 

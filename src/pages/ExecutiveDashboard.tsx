@@ -1,4 +1,4 @@
-﻿import { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import Chart from '../components/Chart';
 import ChartCard from '../components/ChartCard';
 import StatCard from '../components/StatCard';
@@ -227,7 +227,7 @@ ORDER BY r, f;`;
 
   if (error) {
     return (
-      <div className="chart-card p-6 text-sm text-ink-600">
+      <div className="chart-card p-6 text-sm text-slate-400">
         Unable to load the executive overview: {error}
       </div>
     );
@@ -368,35 +368,35 @@ ORDER BY r, f;`;
   return (
     <div className="space-y-6">
       <section className="chart-card p-6">
-        <h2 className="text-lg font-semibold text-ink-900">Executive Performance Brief</h2>
-        <p className="mt-1 text-sm text-ink-600">
+        <h2 className="text-lg font-semibold text-slate-50">Executive Performance Brief</h2>
+        <p className="mt-1 text-sm text-slate-400">
           A single decision view of net sales momentum, basket economics, category concentration,
           and promotion efficiency.
         </p>
         <div className="mt-4 grid gap-3 md:grid-cols-3">
-          <div className="rounded-xl border border-ink-100 bg-white/70 p-4">
-            <div className="text-xs font-semibold uppercase tracking-[0.2em] text-ink-500">
+          <div className="rounded-xl border border-white/[0.08] bg-white/[0.04] p-4">
+            <div className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-500">
               What You Are Seeing
             </div>
-            <p className="mt-2 text-sm text-ink-600">
+            <p className="mt-2 text-sm text-slate-400">
               Current business performance across sales, trips, customer activity, and promotional
               influence.
             </p>
           </div>
-          <div className="rounded-xl border border-ink-100 bg-white/70 p-4">
-            <div className="text-xs font-semibold uppercase tracking-[0.2em] text-ink-500">
+          <div className="rounded-xl border border-white/[0.08] bg-white/[0.04] p-4">
+            <div className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-500">
               Why It Matters
             </div>
-            <p className="mt-2 text-sm text-ink-600">
+            <p className="mt-2 text-sm text-slate-400">
               These indicators reveal where growth is strong, where margin is pressured, and where
               intervention will have the highest impact.
             </p>
           </div>
-          <div className="rounded-xl border border-ink-100 bg-white/70 p-4">
-            <div className="text-xs font-semibold uppercase tracking-[0.2em] text-ink-500">
+          <div className="rounded-xl border border-white/[0.08] bg-white/[0.04] p-4">
+            <div className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-500">
               How To Interpret
             </div>
-            <p className="mt-2 text-sm text-ink-600">
+            <p className="mt-2 text-sm text-slate-400">
               Start with net sales trend, then validate whether performance is driven by bigger
               baskets, stronger category mix, or better promotion conversion.
             </p>

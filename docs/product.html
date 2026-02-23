@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Product · Retail Decision Intelligence</title>
+  <meta name="description" content="User journey, key features, personas, and the before/after impact of instant in-browser retail analytics." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            bg: '#0A0F1E', card: '#131929', raised: '#1A2338',
+            indigo: { DEFAULT: '#6366F1', light: '#818CF8', dark: '#4F46E5' },
+            emerald: { DEFAULT: '#10B981', light: '#34D399' },
+            amber: { DEFAULT: '#F59E0B', light: '#FBBF24' },
+          },
+          fontFamily: { sans: ['Inter', 'system-ui'], mono: ['"JetBrains Mono"', 'monospace'] }
+        }
+      }
+    }
+  </script>
+  <style>
+    body { background-color: #0A0F1E; color: #F8FAFC; font-family: 'Inter', system-ui; -webkit-font-smoothing: antialiased; }
+    ::-webkit-scrollbar { width: 6px; } ::-webkit-scrollbar-thumb { background: #334155; border-radius: 3px; }
+    @keyframes fadeUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+    .fade-up { animation: fadeUp 0.6s ease both; }
+  </style>
+</head>
+<body>
+  <div id="root"></div>
+  <script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <script type="text/babel">
+    const { useState } = React;
+
+    const NAV_LINKS = [
+      { href: './perspectives/index.html', label: 'Perspectives' },
+      { href: './engineering.html', label: 'Engineering' },
+      { href: './product.html', label: 'Product', current: true },
+      { href: './capability.html', label: 'Capability' },
+      { href: './executive.html', label: 'Executive' },
+    ];
+
+    const Nav = () => {
+      const [open, setOpen] = useState(false);
+      return (
+        <nav className="sticky top-0 z-50 border-b border-white/[0.06] bg-bg/90 backdrop-blur-md">
+          <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-3 md:px-8">
+            <a href="https://arvind3.github.io/retail_analytics/#/" className="text-sm font-semibold text-indigo hover:text-indigo-light transition">Retail Decision Intelligence</a>
+            <button onClick={() => setOpen(!open)} className="flex h-11 w-11 items-center justify-center rounded-lg text-slate-400 hover:bg-white/[0.04] md:hidden">
+              {open ? <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M18 6L6 18M6 6l12 12"/></svg>
+                     : <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M3 12h18M3 6h18M3 18h18"/></svg>}
+            </button>
+            <div className="hidden md:flex gap-1">
+              {NAV_LINKS.map(l => <a key={l.href} href={l.href} className={`px-3 py-1.5 rounded-full text-sm transition ${l.current ? 'bg-emerald text-white' : 'text-slate-400 hover:text-white hover:bg-white/[0.05]'}`}>{l.label}</a>)}
+            </div>
+          </div>
+          {open && <div className="md:hidden border-t border-white/[0.06] px-4 pb-4 pt-2 flex flex-col gap-1">
+            {NAV_LINKS.map(l => <a key={l.href} href={l.href} className={`min-h-[44px] flex items-center px-3 text-sm rounded-lg ${l.current ? 'text-emerald-light' : 'text-slate-300 hover:text-white hover:bg-white/[0.04]'}`}>{l.label}</a>)}
+          </div>}
+        </nav>
+      );
+    };
+
+    const FEATURES = [
+      { title: 'Executive KPI Dashboard', color: '#6366F1', icon: '◈', desc: 'Net sales, shopping trips, active households, average basket value, and promotion redemption rate — all from a single view with weekly trend comparison.' },
+      { title: 'Customer Retention Cohorts', color: '#10B981', icon: '◎', desc: 'Visualize how each cohort of new shoppers retains over 12 weeks. Spot decay patterns early and target lifecycle interventions.' },
+      { title: 'Promotion Intelligence', color: '#F59E0B', icon: '⬡', desc: 'Promotion response by category, income segment, and campaign type. Measure incremental lift versus the 28-day pre-campaign baseline.' },
+      { title: 'Decision Lab (SQL Studio)', color: '#38BDF8', icon: '⚙', desc: 'Run any SQL query against the full in-session dataset. Curated templates included. Visualize results as column or trend charts. Share query links.' },
+    ];
+
+    const PERSONAS = [
+      { role: 'Retail Category Manager', color: '#6366F1', need: 'Needs immediate visibility into category concentration, SKU performance, and promo ROI without waiting on BI ticket queues.' },
+      { role: 'VP of Marketing', color: '#10B981', need: 'Needs campaign lift data and customer retention trends to allocate budget toward highest-return segments and channels.' },
+      { role: 'Analytics Engineer', color: '#F59E0B', need: 'Evaluating whether DuckDB-WASM can replace or supplement backend analytics infrastructure for sub-second exploratory queries.' },
+    ];
+
+    const JOURNEY = [
+      { step: '01', label: 'Open URL', desc: 'Navigate to the GitHub Pages URL — no login, no installation.' },
+      { step: '02', label: 'Data Loads', desc: 'DuckDB-WASM initializes. Parquet files stream from CDN to browser (~30s first load, cached after).' },
+      { step: '03', label: 'Executive Overview', desc: 'Review KPIs, weekly sales trend, basket distribution, category Pareto, and promotion impact.' },
+      { step: '04', label: 'Customer Insights', desc: 'Deep-dive into retention cohorts, segment promotion response, and campaign lift.' },
+      { step: '05', label: 'Decision Lab', desc: 'Run custom SQL, visualize results, and share query links with colleagues.' },
+    ];
+
+    const App = () => (
+      <div style={{ minHeight: '100vh', background: '#0A0F1E' }}>
+        <div className="h-px bg-gradient-to-r from-transparent via-emerald to-transparent" />
+        <Nav />
+
+        {/* Hero */}
+        <section className="mx-auto max-w-4xl px-4 pt-16 pb-12 md:px-8">
+          <div className="fade-up inline-flex items-center gap-2 rounded-full border border-emerald/40 bg-emerald/10 px-4 py-1.5 text-xs font-semibold uppercase tracking-wider text-emerald-light mb-4">
+            Product Perspective
+          </div>
+          <h1 className="text-3xl font-bold tracking-tight text-slate-50 md:text-4xl lg:text-5xl">
+            Decisions at the Speed<br className="hidden sm:inline" /> of Questions
+          </h1>
+          <p className="mt-4 max-w-2xl text-lg text-slate-400">
+            Answer your most important retail questions the moment they arise — without tickets,
+            without waiting for BI queues, without infrastructure provisioning.
+          </p>
+        </section>
+
+        {/* The Problem */}
+        <section className="mx-auto max-w-5xl px-4 pb-12 md:px-8">
+          <div className="rounded-2xl border border-white/[0.08] bg-card p-6 md:p-8">
+            <h2 className="text-lg font-semibold text-slate-50 mb-3">The Problem</h2>
+            <p className="text-slate-400 leading-relaxed">
+              Retail leaders operate in a world where category decisions, promotion investments, and
+              customer interventions need to happen in hours — but analytics infrastructure delivers
+              answers in days. BI reports are scheduled. Data access requires IT tickets. The numbers
+              executives see in Monday's review reflect last week's reality. By the time decisions
+              are made, the promotional window has closed, the inventory position has shifted, and
+              the customer who should have been re-engaged has already churned.
+            </p>
+          </div>
+        </section>
+
+        {/* User Journey */}
+        <section className="mx-auto max-w-5xl px-4 pb-14 md:px-8">
+          <h2 className="text-xl font-semibold text-slate-50 mb-6">User Journey</h2>
+          <div className="flex flex-col gap-3 md:flex-row md:items-start md:gap-0">
+            {JOURNEY.map((j, i) => (
+              <div key={j.step} className="flex flex-row gap-3 md:flex-col md:flex-1 md:items-center md:text-center md:gap-2">
+                <div className="flex flex-col items-center md:contents">
+                  <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-indigo text-xs font-bold text-white">{j.step}</div>
+                  {i < JOURNEY.length - 1 && <div className="w-px grow bg-white/[0.08] md:hidden" />}
+                </div>
+                <div className="pb-4 md:pb-0">
+                  <div className="text-sm font-semibold text-slate-200">{j.label}</div>
+                  <p className="mt-1 text-xs text-slate-400 leading-relaxed">{j.desc}</p>
+                </div>
+                {i < JOURNEY.length - 1 && <div className="hidden md:block h-px w-full bg-white/[0.08] self-start mt-4" />}
+              </div>
+            ))}
+          </div>
+        </section>
+
+        {/* Features */}
+        <section className="mx-auto max-w-5xl px-4 pb-14 md:px-8">
+          <h2 className="text-xl font-semibold text-slate-50 mb-6">Key Features</h2>
+          <div className="grid gap-4 sm:grid-cols-2">
+            {FEATURES.map(f => (
+              <div key={f.title} className="rounded-xl border border-white/[0.08] bg-card p-5">
+                <div className="flex items-center gap-2 mb-2">
+                  <span className="text-lg" style={{ color: f.color }}>{f.icon}</span>
+                  <span className="text-sm font-semibold text-slate-100">{f.title}</span>
+                </div>
+                <p className="text-sm text-slate-400 leading-relaxed">{f.desc}</p>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        {/* Personas */}
+        <section className="mx-auto max-w-5xl px-4 pb-14 md:px-8">
+          <h2 className="text-xl font-semibold text-slate-50 mb-6">Who Is This For</h2>
+          <div className="grid gap-4 md:grid-cols-3">
+            {PERSONAS.map(p => (
+              <div key={p.role} className="rounded-xl border border-white/[0.08] bg-card p-5">
+                <div className="text-sm font-semibold mb-2" style={{ color: p.color }}>{p.role}</div>
+                <p className="text-sm text-slate-400 leading-relaxed">{p.need}</p>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        {/* Before / After */}
+        <section className="mx-auto max-w-5xl px-4 pb-14 md:px-8">
+          <h2 className="text-xl font-semibold text-slate-50 mb-6">Before vs. After</h2>
+          <div className="grid gap-4 md:grid-cols-2">
+            <div className="rounded-xl border border-rose-500/20 bg-rose-500/5 p-5">
+              <div className="text-sm font-semibold text-rose-400 mb-3">Before — Traditional BI Flow</div>
+              <ul className="space-y-2 text-sm text-slate-400">
+                {['Submit BI report request, wait 2-5 business days','Request IT access to data warehouse, wait for approval','Download CSV export, paste into Excel or Google Sheets','Perform manual calculations, check for stale data','Present findings — based on last week\'s numbers','Repeat the whole cycle for a follow-up question'].map(t => (
+                  <li key={t} className="flex gap-2"><span className="mt-0.5 text-rose-500 shrink-0">✗</span><span>{t}</span></li>
+                ))}
+              </ul>
+            </div>
+            <div className="rounded-xl border border-emerald/20 bg-emerald/5 p-5">
+              <div className="text-sm font-semibold text-emerald-light mb-3">After — Retail Decision Intelligence</div>
+              <ul className="space-y-2 text-sm text-slate-400">
+                {['Open browser, navigate to dashboard URL','DuckDB-WASM loads Parquet data client-side (~30s)','Interactive charts render with current dataset','Ask a follow-up question in Decision Lab with custom SQL','Share a query link with a colleague in seconds','Entire session: zero backend calls, zero IT tickets'].map(t => (
+                  <li key={t} className="flex gap-2"><span className="mt-0.5 text-emerald-light shrink-0">✓</span><span>{t}</span></li>
+                ))}
+              </ul>
+            </div>
+          </div>
+        </section>
+
+        {/* CTA */}
+        <section className="border-t border-white/[0.06] px-4 py-12 text-center">
+          <h2 className="text-xl font-semibold text-slate-50 mb-3">See it in action</h2>
+          <p className="text-slate-400 mb-6">Open the live platform and experience the workflow firsthand.</p>
+          <a href="https://arvind3.github.io/retail_analytics/#/"
+            className="inline-flex items-center gap-2 rounded-full bg-emerald px-6 py-3 text-sm font-semibold text-white transition hover:bg-emerald-500">
+            Open Live Dashboard →
+          </a>
+        </section>
+
+        <footer className="border-t border-white/[0.06] px-4 py-6 text-center">
+          <p className="text-xs text-slate-600">
+            <a href="https://github.com/arvind3/retail_analytics" className="hover:text-slate-400 transition">github.com/arvind3/retail_analytics</a>
+            {' · '}
+            <a href="https://arvind3.github.io/retail_analytics/#/" className="hover:text-slate-400 transition">Live Demo</a>
+          </p>
+        </footer>
+      </div>
+    );
+
+    ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+  </script>
+</body>
+</html>

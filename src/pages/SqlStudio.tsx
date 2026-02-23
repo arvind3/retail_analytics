@@ -1,4 +1,4 @@
-﻿import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import Chart from '../components/Chart';
 import LoadingPanel from '../components/LoadingPanel';
@@ -94,35 +94,35 @@ const SqlStudio = () => {
   return (
     <div className="space-y-6">
       <section className="chart-card p-6">
-        <h2 className="text-lg font-semibold text-ink-900">Decision Lab</h2>
-        <p className="mt-1 text-sm text-ink-600">
+        <h2 className="text-lg font-semibold text-slate-50">Decision Lab</h2>
+        <p className="mt-1 text-sm text-slate-400">
           Explore business questions instantly with in-browser SQL and convert results into
           decision-ready evidence.
         </p>
         <div className="mt-4 grid gap-3 md:grid-cols-3">
-          <div className="rounded-xl border border-ink-100 bg-white/70 p-4">
-            <div className="text-xs font-semibold uppercase tracking-[0.2em] text-ink-500">
+          <div className="rounded-xl border border-white/[0.08] bg-white/[0.04] p-4">
+            <div className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-500">
               What You Are Seeing
             </div>
-            <p className="mt-2 text-sm text-ink-600">
+            <p className="mt-2 text-sm text-slate-400">
               Curated analysis templates plus free-form SQL against the full in-session retail
               dataset.
             </p>
           </div>
-          <div className="rounded-xl border border-ink-100 bg-white/70 p-4">
-            <div className="text-xs font-semibold uppercase tracking-[0.2em] text-ink-500">
+          <div className="rounded-xl border border-white/[0.08] bg-white/[0.04] p-4">
+            <div className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-500">
               Why It Matters
             </div>
-            <p className="mt-2 text-sm text-ink-600">
+            <p className="mt-2 text-sm text-slate-400">
               Enables leaders and analysts to validate assumptions immediately without waiting on a
               backend analytics queue.
             </p>
           </div>
-          <div className="rounded-xl border border-ink-100 bg-white/70 p-4">
-            <div className="text-xs font-semibold uppercase tracking-[0.2em] text-ink-500">
+          <div className="rounded-xl border border-white/[0.08] bg-white/[0.04] p-4">
+            <div className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-500">
               How To Interpret
             </div>
-            <p className="mt-2 text-sm text-ink-600">
+            <p className="mt-2 text-sm text-slate-400">
               Use templates for common decisions, then refine filters and segments to isolate
               action-ready opportunities.
             </p>
@@ -133,8 +133,8 @@ const SqlStudio = () => {
       <div className="chart-card p-6">
         <div className="flex flex-wrap items-center justify-between gap-4">
           <div>
-            <h2 className="text-lg font-semibold text-ink-900">Analyst Workspace</h2>
-            <p className="text-sm text-ink-500">
+            <h2 className="text-lg font-semibold text-slate-50">Analyst Workspace</h2>
+            <p className="text-sm text-slate-500">
               Run high-speed in-memory analysis with DuckDB-WASM. Business templates included.
             </p>
           </div>
@@ -144,10 +144,10 @@ const SqlStudio = () => {
                 key={type.id}
                 type="button"
                 onClick={() => setChartType(type.id)}
-                className={`rounded-full border px-3 py-1 text-xs font-semibold uppercase tracking-wide ${
+                className={`rounded-full border px-3 py-1 text-xs font-semibold uppercase tracking-wide transition-all duration-150 ${
                   chartType === type.id
-                    ? 'border-accent-500 bg-accent-500 text-white'
-                    : 'border-ink-200 bg-white/80 text-ink-600'
+                    ? 'border-indigo-500 bg-indigo-500 text-white'
+                    : 'border-white/[0.10] bg-white/[0.04] text-slate-400 hover:border-indigo-600 hover:text-slate-200'
                 }`}
               >
                 {type.label}
@@ -167,34 +167,34 @@ const SqlStudio = () => {
               setSearchParams({ tab: id, query: selected.sql });
             }}
           />
-          <div className="rounded-xl border border-ink-100 bg-white/70 px-4 py-3 text-sm text-ink-600">
-            <div className="font-semibold text-ink-800">Selected analysis template: {activeQuery.title}</div>
+          <div className="rounded-xl border border-white/[0.08] bg-white/[0.04] px-4 py-3 text-sm text-slate-400">
+            <div className="font-semibold text-slate-200">Selected analysis template: {activeQuery.title}</div>
             <div>{activeQuery.description}</div>
           </div>
 
           <textarea
             value={sql}
             onChange={(event) => setSql(event.target.value)}
-            className="min-h-[200px] w-full rounded-xl border border-ink-200 bg-white/90 p-4 font-mono text-sm text-ink-700"
+            className="min-h-[200px] w-full rounded-xl border border-white/[0.08] bg-[#0D1425] p-4 font-mono text-sm text-slate-300 focus:border-indigo-600 focus:outline-none"
           />
 
           <div className="flex flex-wrap items-center gap-3">
             <button
               type="button"
               onClick={run}
-              className="rounded-full bg-accent-500 px-6 py-2 text-sm font-semibold text-white"
+              className="rounded-full bg-indigo-500 px-6 py-2 text-sm font-semibold text-white transition hover:bg-indigo-600"
             >
               Run analysis
             </button>
             <button
               type="button"
               onClick={copyLink}
-              className="rounded-full border border-ink-200 bg-white/80 px-5 py-2 text-sm font-semibold text-ink-700"
+              className="rounded-full border border-white/[0.10] bg-white/[0.04] px-5 py-2 text-sm font-semibold text-slate-300 transition hover:border-indigo-600 hover:text-slate-100"
             >
               Copy link
             </button>
             {result ? (
-              <div className="text-xs text-ink-500">
+              <div className="text-xs text-slate-500">
                 Runtime {formatDurationMs(result.elapsedMs)} · Rows returned {formatNumber(result.rowCount)} · Data in session{' '}
                 {formatBytes(dbState.loadedBytes)} · Browser memory{' '}
                 {result.memoryBytes ? formatBytes(result.memoryBytes) : 'n/a'} · Rows scanned{' '}
@@ -207,7 +207,7 @@ const SqlStudio = () => {
 
       {loading ? <LoadingPanel label="Running analysis" /> : null}
       {error ? (
-        <div className="chart-card p-6 text-sm text-ink-600">
+        <div className="chart-card p-6 text-sm text-slate-400">
           Analysis failed: {error}
         </div>
       ) : null}
@@ -217,7 +217,7 @@ const SqlStudio = () => {
           {chartOption ? (
             <div className="chart-card p-6">
               <Chart option={chartOption} height={320} />
-              <p className="mt-4 text-sm text-ink-600">
+              <p className="mt-4 border-t border-white/[0.06] pt-3 text-sm text-slate-400">
                 Business interpretation: Use this view to quickly validate trend direction and
                 magnitude before deciding on deeper investigation.
               </p>

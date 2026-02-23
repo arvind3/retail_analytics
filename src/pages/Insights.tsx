@@ -1,4 +1,4 @@
-﻿import { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import Chart from '../components/Chart';
 import ChartCard from '../components/ChartCard';
 import Skeleton from '../components/Skeleton';
@@ -187,7 +187,7 @@ LIMIT 20;`;
 
   if (error) {
     return (
-      <div className="chart-card p-6 text-sm text-ink-600">
+      <div className="chart-card p-6 text-sm text-slate-400">
         Unable to load customer and promotion intelligence: {error}
       </div>
     );
@@ -274,35 +274,35 @@ LIMIT 20;`;
   return (
     <div className="space-y-6">
       <section className="chart-card p-6">
-        <h2 className="text-lg font-semibold text-ink-900">Customer & Promotion Intelligence</h2>
-        <p className="mt-1 text-sm text-ink-600">
+        <h2 className="text-lg font-semibold text-slate-50">Customer & Promotion Intelligence</h2>
+        <p className="mt-1 text-sm text-slate-400">
           Understand retention quality, promotion response, and campaign effectiveness to guide
           targeted growth actions.
         </p>
         <div className="mt-4 grid gap-3 md:grid-cols-3">
-          <div className="rounded-xl border border-ink-100 bg-white/70 p-4">
-            <div className="text-xs font-semibold uppercase tracking-[0.2em] text-ink-500">
+          <div className="rounded-xl border border-white/[0.08] bg-white/[0.04] p-4">
+            <div className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-500">
               What You Are Seeing
             </div>
-            <p className="mt-2 text-sm text-ink-600">
+            <p className="mt-2 text-sm text-slate-400">
               Retention cohorts, segment response to promotions, campaign lift, and basket affinity
               behavior.
             </p>
           </div>
-          <div className="rounded-xl border border-ink-100 bg-white/70 p-4">
-            <div className="text-xs font-semibold uppercase tracking-[0.2em] text-ink-500">
+          <div className="rounded-xl border border-white/[0.08] bg-white/[0.04] p-4">
+            <div className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-500">
               Why It Matters
             </div>
-            <p className="mt-2 text-sm text-ink-600">
+            <p className="mt-2 text-sm text-slate-400">
               These patterns reveal which customers to retain, where promotions work best, and
               where cross-sell can accelerate growth.
             </p>
           </div>
-          <div className="rounded-xl border border-ink-100 bg-white/70 p-4">
-            <div className="text-xs font-semibold uppercase tracking-[0.2em] text-ink-500">
+          <div className="rounded-xl border border-white/[0.08] bg-white/[0.04] p-4">
+            <div className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-500">
               How To Interpret
             </div>
-            <p className="mt-2 text-sm text-ink-600">
+            <p className="mt-2 text-sm text-slate-400">
               Focus on cohort decay, then compare segment redemption and campaign lift to prioritize
               high-ROI customer actions.
             </p>

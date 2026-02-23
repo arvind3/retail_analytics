@@ -1,4 +1,4 @@
-﻿import { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { getMetadata } from '../lib/metadata';
 import { useDbState } from '../lib/dbState';
 import { formatBytes } from '../lib/format';
@@ -16,10 +16,19 @@ const DataStatus = () => {
     dbState.status === 'ready'
       ? 'Operational'
       : dbState.status === 'loading'
-        ? 'Preparing analysis'
+        ? 'Preparing'
         : dbState.status === 'error'
-          ? 'Attention required'
-          : 'Standing by';
+          ? 'Error'
+          : 'Standby';
+
+  const statusColor =
+    dbState.status === 'ready'
+      ? 'bg-emerald-500'
+      : dbState.status === 'loading'
+        ? 'bg-amber-400'
+        : dbState.status === 'error'
+          ? 'bg-rose-500'
+          : 'bg-slate-500';
 
   useEffect(() => {
     getMetadata().then((metadata) => {
@@ -29,36 +38,39 @@ const DataStatus = () => {
   }, []);
 
   return (
-    <div className="flex flex-wrap items-center justify-between gap-4 rounded-2xl border border-ink-100 bg-white/80 px-5 py-4 shadow-soft">
-      <div>
-        <div className="text-xs font-semibold uppercase tracking-[0.2em] text-ink-500">
-          Retail Dataset
-        </div>
-        <div className="text-sm font-semibold text-ink-800">{source}</div>
-        <div className="text-xs text-ink-500">Last refresh {displayGeneratedAt}</div>
-      </div>
-      <div className="flex flex-col items-end gap-1">
-        <div className="text-xs font-semibold uppercase tracking-[0.2em] text-ink-500">
-          Analytics Engine
-        </div>
-        <div
-          className="text-sm font-semibold text-ink-800"
+    <div className="flex flex-wrap items-center gap-4 rounded-xl border border-white/[0.08] bg-white/[0.04] px-4 py-2.5">
+      {/* Engine status dot + label */}
+      <div className="flex items-center gap-2">
+        <span className={`inline-block h-2 w-2 rounded-full ${statusColor}`} />
+        <span
+          className="text-xs font-semibold text-slate-300"
           data-testid="duckdb-status"
         >
           {engineStatus}
-        </div>
-        <div className="text-xs text-ink-500">{dbState.message || 'In-browser execution active'}</div>
+        </span>
       </div>
-      <div className="flex flex-col items-end gap-1">
-        <div className="text-xs font-semibold uppercase tracking-[0.2em] text-ink-500">
-          Data Footprint
-        </div>
-        <div className="text-sm font-semibold text-ink-800">
-          {formatBytes(dbState.loadedBytes)} / {formatBytes(dbState.totalBytes)}
-        </div>
-        <div className="text-xs text-ink-500">
-          {dbState.loadedTables.length} tables ready for analysis
-        </div>
+
+      {/* Dataset info — hidden on small screens */}
+      <div className="hidden items-center gap-1 sm:flex">
+        <span className="text-xs text-slate-500">{source || '—'}</span>
+        <span className="text-xs text-slate-600">·</span>
+        <span className="text-xs text-slate-500">
+          {formatBytes(dbState.loadedBytes)}
+        </span>
+        {dbState.loadedTables.length > 0 && (
+          <>
+            <span className="text-xs text-slate-600">·</span>
+            <span className="text-xs text-slate-500">
+              {dbState.loadedTables.length} tables
+            </span>
+          </>
+        )}
+      </div>
+
+      {/* Refresh timestamp — desktop only */}
+      <div className="hidden items-center gap-1 lg:flex">
+        <span className="text-xs text-slate-600">Updated</span>
+        <span className="text-xs text-slate-500">{displayGeneratedAt}</span>
       </div>
     </div>
   );

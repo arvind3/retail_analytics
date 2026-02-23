@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Executive · Retail Decision Intelligence</title>
+  <meta name="description" content="Strategic value, market opportunity, and the infrastructure-free analytics thesis for C-suite and senior leadership." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            bg: '#0A0F1E', card: '#131929', raised: '#1A2338',
+            indigo: { DEFAULT: '#6366F1', light: '#818CF8', dark: '#4F46E5' },
+            emerald: { DEFAULT: '#10B981', light: '#34D399' },
+            amber: { DEFAULT: '#F59E0B', light: '#FBBF24' },
+            sky: { DEFAULT: '#0EA5E9', light: '#38BDF8' },
+          },
+          fontFamily: { sans: ['Inter', 'system-ui'], mono: ['"JetBrains Mono"', 'monospace'] }
+        }
+      }
+    }
+  </script>
+  <style>
+    body { background-color: #0A0F1E; color: #F8FAFC; font-family: 'Inter', system-ui; -webkit-font-smoothing: antialiased; }
+    ::-webkit-scrollbar { width: 6px; } ::-webkit-scrollbar-thumb { background: #334155; border-radius: 3px; }
+    @keyframes fadeUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+    .fade-up { animation: fadeUp 0.6s ease both; }
+    .fade-up-2 { animation: fadeUp 0.6s 0.1s ease both; }
+  </style>
+</head>
+<body>
+  <div id="root"></div>
+  <script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <script type="text/babel">
+    const { useState } = React;
+
+    const NAV_LINKS = [
+      { href: './perspectives/index.html', label: 'Perspectives' },
+      { href: './engineering.html', label: 'Engineering' },
+      { href: './product.html', label: 'Product' },
+      { href: './capability.html', label: 'Capability' },
+      { href: './executive.html', label: 'Executive', current: true },
+    ];
+
+    const Nav = () => {
+      const [open, setOpen] = useState(false);
+      return (
+        <nav className="sticky top-0 z-50 border-b border-white/[0.06] bg-bg/90 backdrop-blur-md">
+          <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-3 md:px-8">
+            <a href="https://arvind3.github.io/retail_analytics/#/" className="text-sm font-semibold text-indigo hover:text-indigo-light transition">Retail Decision Intelligence</a>
+            <button onClick={() => setOpen(!open)} className="flex h-11 w-11 items-center justify-center rounded-lg text-slate-400 hover:bg-white/[0.04] md:hidden">
+              {open ? <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M18 6L6 18M6 6l12 12"/></svg>
+                     : <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M3 12h18M3 6h18M3 18h18"/></svg>}
+            </button>
+            <div className="hidden md:flex gap-1">
+              {NAV_LINKS.map(l => <a key={l.href} href={l.href} className={`px-3 py-1.5 rounded-full text-sm transition ${l.current ? 'bg-sky text-white' : 'text-slate-400 hover:text-white hover:bg-white/[0.05]'}`}>{l.label}</a>)}
+            </div>
+          </div>
+          {open && <div className="md:hidden border-t border-white/[0.06] px-4 pb-4 pt-2 flex flex-col gap-1">
+            {NAV_LINKS.map(l => <a key={l.href} href={l.href} className={`min-h-[44px] flex items-center px-3 text-sm rounded-lg ${l.current ? 'text-sky-light' : 'text-slate-300 hover:text-white hover:bg-white/[0.04]'}`}>{l.label}</a>)}
+          </div>}
+        </nav>
+      );
+    };
+
+    const EVIDENCE = [
+      { metric: 'Production Deployment', detail: 'Live on GitHub Pages. Zero infrastructure cost. Available globally 24/7.' },
+      { metric: 'E2E Validated', detail: 'Playwright automated testing covers all three app views and critical data interactions.' },
+      { metric: '5M+ Transactions', detail: 'completejourney dataset — real retail transaction data processed entirely in the browser.' },
+      { metric: 'Sub-30s First Load', detail: 'Parquet data fetches and DuckDB-WASM initializes in under 30 seconds on broadband.' },
+    ];
+
+    const App = () => (
+      <div style={{ minHeight: '100vh', background: '#0A0F1E' }}>
+        <div className="h-px bg-gradient-to-r from-transparent via-sky to-transparent" />
+        <Nav />
+
+        {/* Hero */}
+        <section className="mx-auto max-w-4xl px-4 pt-16 pb-14 text-center md:px-8">
+          <div className="fade-up inline-flex items-center gap-2 rounded-full border border-sky/40 bg-sky/10 px-4 py-1.5 text-xs font-semibold uppercase tracking-wider text-sky-light mb-6">
+            Executive Perspective
+          </div>
+          <h1 className="fade-up text-4xl font-bold tracking-tight text-slate-50 md:text-5xl lg:text-6xl leading-tight">
+            Retail Intelligence Without<br className="hidden sm:inline" /> the Infrastructure Tax
+          </h1>
+          <p className="fade-up-2 mt-6 max-w-2xl mx-auto text-lg text-slate-400">
+            A new architectural proof point: enterprise-grade retail analytics delivered in the
+            browser, with no servers, no database clusters, and no backend engineering required.
+          </p>
+        </section>
+
+        {/* The Opportunity */}
+        <section className="mx-auto max-w-5xl px-4 pb-12 md:px-8">
+          <div className="rounded-2xl border border-white/[0.08] bg-card p-6 md:p-8">
+            <h2 className="text-lg font-semibold text-slate-50 mb-4">The Opportunity</h2>
+            <p className="text-slate-400 leading-relaxed mb-4">
+              Analytics infrastructure consumes 15-30% of data team budget without proportional
+              improvement in decision velocity. Executives still receive last week's numbers for
+              today's decisions. The bottleneck is not data — it is the layers of infrastructure
+              between the data and the decision-maker.
+            </p>
+            <p className="text-slate-400 leading-relaxed">
+              WebAssembly has reached a maturity threshold where full columnar SQL engines run
+              natively in the browser. Parquet has become the universal format for analytical data.
+              GitHub Pages delivers static assets globally. The combination eliminates the
+              infrastructure tier entirely — not as a workaround, but as the intended architecture.
+            </p>
+          </div>
+        </section>
+
+        {/* What Was Built */}
+        <section className="mx-auto max-w-5xl px-4 pb-12 md:px-8">
+          <h2 className="text-xl font-semibold text-slate-50 mb-4">What Was Built</h2>
+          <div className="grid gap-4 md:grid-cols-3">
+            {[
+              { title: 'Executive Analytics Platform', color: '#6366F1', desc: 'Three-view SPA (Executive Overview, Customer Intelligence, Decision Lab) delivering KPIs, cohort analysis, promotion effectiveness, and custom SQL queries.' },
+              { title: 'Zero-Infrastructure Runtime', color: '#10B981', desc: 'DuckDB-WASM processes 5M+ retail transactions in the analyst\'s browser. No cloud compute. No backend API. No database subscription.' },
+              { title: 'Production-Grade Delivery', color: '#38BDF8', desc: 'GitHub Actions CI/CD pipeline: TypeScript, ESLint, unit tests, Playwright E2E tests, and automated deployment to GitHub Pages on every push to main.' },
+            ].map(w => (
+              <div key={w.title} className="rounded-xl border border-white/[0.08] bg-card p-5">
+                <div className="h-1 w-10 rounded-full mb-3" style={{ background: w.color }} />
+                <div className="text-sm font-semibold text-slate-100 mb-2">{w.title}</div>
+                <p className="text-sm text-slate-400 leading-relaxed">{w.desc}</p>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        {/* Traction */}
+        <section className="mx-auto max-w-5xl px-4 pb-12 md:px-8">
+          <h2 className="text-xl font-semibold text-slate-50 mb-4">Traction & Evidence</h2>
+          <div className="grid gap-3 sm:grid-cols-2">
+            {EVIDENCE.map(e => (
+              <div key={e.metric} className="flex gap-4 rounded-xl border border-white/[0.08] bg-card p-4">
+                <div className="mt-0.5 h-2 w-2 shrink-0 rounded-full bg-emerald" />
+                <div>
+                  <div className="text-sm font-semibold text-slate-200">{e.metric}</div>
+                  <p className="mt-0.5 text-sm text-slate-400">{e.detail}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        {/* Strategic Value */}
+        <section className="mx-auto max-w-5xl px-4 pb-12 md:px-8">
+          <div className="rounded-2xl border border-indigo/20 bg-indigo/5 p-6 md:p-8">
+            <h2 className="text-lg font-semibold text-slate-50 mb-4">Strategic Value</h2>
+            <p className="text-slate-400 leading-relaxed mb-4">
+              As WebAssembly matures and Parquet becomes the standard analytical interchange format,
+              the in-browser analytics delivery model becomes the lowest-cost, highest-availability
+              path to interactive analytics at any scale. Early investment in this architecture builds
+              compounding advantage: faster iteration cycles, lower infrastructure overhead, and a
+              security model where sensitive data never leaves the client device.
+            </p>
+            <p className="text-slate-400 leading-relaxed">
+              The teams that adopt this pattern first will compress their time-to-insight from days
+              to seconds, eliminate the analytics infrastructure cost center, and provide executives
+              with live data rather than last week's exports.
+            </p>
+          </div>
+        </section>
+
+        {/* Founder Quote */}
+        <section className="mx-auto max-w-3xl px-4 pb-14 md:px-8">
+          <blockquote className="border-l-4 border-sky pl-6 py-2">
+            <p className="text-xl font-light text-slate-300 leading-relaxed italic">
+              "Analytics should answer questions in seconds, not in sprints. We built this to prove
+              that the infrastructure tier of the analytics stack is now optional — and eliminating
+              it is not a shortcut. It is the right architecture."
+            </p>
+          </blockquote>
+        </section>
+
+        {/* CTA */}
+        <section className="border-t border-white/[0.06] px-4 py-12 text-center">
+          <h2 className="text-xl font-semibold text-slate-50 mb-3">Review the platform</h2>
+          <p className="text-slate-400 mb-6 max-w-lg mx-auto">
+            Open the live dashboard and experience the workflow. Then review the technical
+            architecture to evaluate a pilot for your team's most time-sensitive analytical workflow.
+          </p>
+          <div className="flex flex-wrap justify-center gap-3">
+            <a href="https://arvind3.github.io/retail_analytics/#/"
+              className="rounded-full bg-sky px-6 py-3 text-sm font-semibold text-white transition hover:bg-sky-500">
+              Open Live Dashboard →
+            </a>
+            <a href="./engineering.html"
+              className="rounded-full border border-white/[0.10] bg-white/[0.04] px-6 py-3 text-sm font-semibold text-slate-300 transition hover:border-sky hover:text-white">
+              Review Architecture
+            </a>
+          </div>
+        </section>
+
+        <footer className="border-t border-white/[0.06] px-4 py-6 text-center">
+          <p className="text-xs text-slate-600">
+            <a href="https://github.com/arvind3/retail_analytics" className="hover:text-slate-400 transition">github.com/arvind3/retail_analytics</a>
+            {' · '}
+            <a href="https://arvind3.github.io/retail_analytics/#/" className="hover:text-slate-400 transition">Live Demo</a>
+          </p>
+        </footer>
+      </div>
+    );
+
+    ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+  </script>
+</body>
+</html>
