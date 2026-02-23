@@ -100,7 +100,7 @@
       {
         title: 'Relative Vite Base (./)' ,
         why: 'GitHub Pages deploys to /retail_analytics/. An absolute base would hard-code that path. Relative base (./assets/...) resolves correctly from any subdirectory depth.',
-        code: '// dist/index.html (built output)\n<script type="module" src="./assets/index-HASH.js"></script>',
+        code: '// dist/index.html (built output)\n<script type="module" src="./assets/index-HASH.js"><\/script>',
       },
       {
         title: 'docs/ co-deployed with dist/',
@@ -179,7 +179,7 @@
               { step: '01', title: 'Data Preparation', code: '# scripts/prepare_data.py\nimport pyarrow as pa, pyarrow.parquet as pq\npq.write_table(table, "public/data/parquet/transactions.parquet")' },
               { step: '02', title: 'Static Build', code: '# npm run build → dist/\n# DuckDB-WASM bundles are copied by Vite\n# Parquet files served as static assets' },
               { step: '03', title: 'Browser Loads DuckDB-WASM', code: '// src/lib/duckdb.ts\nconst worker = await duckdb.createWorker(bundle.mainWorker);\nconst db = new duckdb.AsyncDuckDB(logger, worker);\nawait db.instantiate(bundle.mainModule);' },
-              { step: '04', title: 'Parquet Registered as Tables', code: '// ensureTables(["transactions"])\nawait conn.query(`\n  CREATE TABLE IF NOT EXISTS transactions AS\n  SELECT * FROM parquet_scan(\'./data/parquet/transactions.parquet\')\n`);' },
+              { step: '04', title: 'Parquet Registered as Tables', code: "// ensureTables([\"transactions\"])\nawait conn.query(\n  `CREATE TABLE IF NOT EXISTS transactions AS\n   SELECT * FROM parquet_scan('./data/parquet/transactions.parquet')`\n);" },
               { step: '05', title: 'SQL Executes In-Browser', code: '// runQuery(sql) → QueryResult\nconst result = await conn.query(sql);\nconst rows = result.toArray().map(r => r.toJSON());' },
             ].map(s => (
               <div key={s.step} className="rounded-xl border border-white/[0.08] bg-card p-5">
